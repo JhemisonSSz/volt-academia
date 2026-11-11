@@ -1,7 +1,7 @@
 # Volt Academia — Especificação de design
 
 Data: 2026-11-11
-Status: aguardando revisão do usuário
+Status: aprovada (decisões do grilling incluídas)
 
 ## 1. Objetivo
 
@@ -103,7 +103,7 @@ volt-academia/
 - Bruno (1002): vence em 3 dias.
 - Carla (1003): em atraso há 7 dias.
 
-A Ana tem treinos passados nas últimas semanas, para o cartão de energia aparecer cheio. A semente também inclui cerca de 8 alunos extras, 4 profissionais, cerca de 12 aulas por semana e reservas já feitas, para as barras de vagas e o painel não ficarem vazios. Todos os nomes e números de WhatsApp são fictícios.
+A Ana tem treinos passados nas últimas semanas, para o cartão de energia aparecer cheio. A semente também inclui 9 alunos extras (o suficiente para lotar a Dança), os 4 profissionais e a grade da seção 7b, com reservas já feitas, para as barras de vagas e o painel não ficarem vazios. Todos os nomes e números de WhatsApp são fictícios.
 
 ## 6. Telas
 
@@ -140,8 +140,32 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 7. Não reserva o que já começou. Cancelamento só até **2 horas antes** do início.
 8. Individual: horários livres = janelas da disponibilidade divididas pela duração do serviço, menos as reservas ativas daquele profissional. Cada horário tem 1 vaga.
 9. Admin: não salva uma aula com `vagas` menor que o número de confirmados na próxima ocorrência. Mostra o motivo.
-10. Aulas coletivas: o aluno reserva até **7 dias à frente**.
+10. O aluno reserva até **7 dias à frente**, tanto aulas coletivas quanto atendimento individual.
 11. `resumoEnergia(reservas, hoje)` → `treinosNoMes` = reservas `confirmada` do aluno com início já passado dentro do mês atual (sem controle de presença, conta como treino feito). `semanasSeguidas` = quantas semanas consecutivas (de segunda a domingo), contando para trás a partir da semana atual, têm ao menos 1 treino. Se a semana atual ainda não tem treino, a contagem começa na semana anterior. Com zero treinos, o cartão mostra "Sua primeira carga de energia começa hoje" e o atalho Reservar.
+
+12. Mensalidade em atraso bloqueia só **novas** reservas. As reservas já feitas continuam valendo e podem ser canceladas.
+13. A lista de espera sobe automaticamente mesmo faltando menos de 2 horas. Quem está só na `espera` pode sair a qualquer momento antes do início (o limite de 2 h vale só para `confirmada`).
+14. O admin cancela qualquer reserva, sem limite de horário (a promoção da espera da regra 5 vale igual). O admin **não** cria reservas em nome do aluno.
+15. Excluir uma aula cancela as reservas futuras dela. Antes, o painel avisa: "Esta aula tem N reservas futuras. Elas serão canceladas."
+16. Excluir um aluno apaga as reservas dele e **mantém os pagamentos**, que aparecem no histórico e na receita como "Aluno removido".
+17. Duas abas abertas (aluno e painel) se atualizam sozinhas pelo evento `storage` do navegador.
+18. A receita do mês é a soma dos pagamentos com `data` no mês atual.
+
+## 7b. Dados de demonstração (decididos no grilling)
+
+**Planos:** Mensal R$ 80,00 (1 mês) · Trimestral R$ 220,00 (3 meses) · Semestral R$ 420,00 (6 meses).
+
+**Grade de aulas coletivas:**
+
+| Aula | Dias | Hora | Duração | Vagas | Professor(a) |
+|---|---|---|---|---|---|
+| Spinning | seg, qua, sex | 07:00 e 19:00 | 45 min | 15 | Diego Rocha |
+| Funcional | ter, qui | 18:00 | 50 min | 20 | Júlia Santos |
+| Funcional | sáb | 09:00 | 50 min | 20 | Júlia Santos |
+| Dança (ritmos) | ter, qui | 19:00 | 60 min | 8 (a próxima ocorrência vem **lotada**, com 1 pessoa na espera) | Júlia Santos |
+| Muay Thai | seg, qua | 20:00 | 60 min | 16 | Diego Rocha |
+
+**Individual:** Personal (60 min) com Rafael Lima, seg a sex, 06:00–10:00 · Avaliação física (40 min) com Marina Alves, ter e qui, 14:00–18:00.
 
 ## 8. Erros e mensagens
 

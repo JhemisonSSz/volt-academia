@@ -30,13 +30,17 @@ const ITENS = [
 const NaoExiste = () => html`<div className="pagina-admin"><h1>Página não encontrada</h1><a href="#/resumo">Voltar ao resumo</a></div>`;
 
 function Entrada({ aoEntrar }) {
+  const [fotoPronta, setFotoPronta] = useState(false); // a foto aparece suavemente depois de carregar
   return html`<main id="conteudo" className="entrada">
+    <img className=${`entrada__fundo ${fotoPronta ? "entrada__fundo--pronto" : ""}`} ref=${(el) => { if (el?.complete && el.naturalWidth) setFotoPronta(true); }} onLoad=${() => setFotoPronta(true)}
+      src="img/entrada-800.jpg" srcSet="img/entrada-800.jpg 800w, img/entrada-1600.jpg 1600w" sizes="100vw" alt="" width="800" height="1200" fetchPriority="high" decoding="async" />
     <div className="entrada__miolo">
       <p className="logo"><span className="logo__raio"><${Raio} tamanho=${28} /></span> VOLT <span className="logo__leve">Academia</span></p>
       <h1 className="entrada__titulo">Painel Volt</h1>
       <p className="entrada__sub">Gerencie alunos, aulas, agenda e mensalidades.</p>
       <${Botao} className="botao--largo" onClick=${aoEntrar}>Entrar como admin (demo)<//>
       <p className="entrada__rodape">Demonstração: os dados ficam só neste navegador. · <a href="index.html">Ver site do aluno</a></p>
+      <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>
     </div>
   </main>`;
 }

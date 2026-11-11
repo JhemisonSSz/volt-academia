@@ -8,10 +8,12 @@ import { Inicio as IconeInicio, Calendario, Usuario, Lista, Sair, Raio } from ".
 import { Entrada } from "./Entrada.js";
 import { Inicio } from "./Inicio.js";
 import { Mensalidade } from "./Mensalidade.js";
+import { Aulas } from "./Aulas.js";
+import { Individual } from "./Individual.js";
+import { Reservas } from "./Reservas.js";
 import { gravarAlunoId, lerAlunoId, limparAlunoId } from "./sessao.js";
 
-// Telas que entram nas próximas tarefas aparecem como "em breve" até lá
-const EmBreve = () => html`<div className="pagina"><p className="suave">Esta tela chega em breve.</p></div>`;
+const NaoExiste = () => html`<div className="pagina"><h1>Página não encontrada</h1><a href="#/inicio">Voltar ao início</a></div>`;
 
 function Aplicacao() {
   const estado = usarEstado();
@@ -37,8 +39,11 @@ function Aplicacao() {
 
   const tela = {
     inicio: html`<${Inicio} estado=${estado} aluno=${aluno} />`,
+    aulas: html`<${Aulas} estado=${estado} aluno=${aluno} />`,
+    individual: html`<${Individual} estado=${estado} aluno=${aluno} />`,
+    reservas: html`<${Reservas} estado=${estado} aluno=${aluno} />`,
     mensalidade: html`<${Mensalidade} estado=${estado} aluno=${aluno} />`,
-  }[rota] ?? html`<${EmBreve} />`;
+  }[rota] ?? html`<${NaoExiste} />`;
 
   return html`<div className="app-aluno">
     <header className="topo">

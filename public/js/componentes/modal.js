@@ -49,7 +49,7 @@ export function Confirmador() {
   return html`<${Modal} titulo=${pedido?.titulo ?? ""} aberto=${Boolean(pedido)} aoFechar=${() => pedido && responder(false)}>
     <p>${pedido?.texto}</p>
     <div className="modal__acoes">
-      <${Botao} variante="fantasma" onClick=${() => responder(false)}>Cancelar<//>
+      <${Botao} variante="fantasma" onClick=${() => responder(false)}>Voltar<//>
       <${Botao} variante="perigo" onClick=${() => responder(true)}>${pedido?.botao ?? "Confirmar"}<//>
     </div>
   <//>`;

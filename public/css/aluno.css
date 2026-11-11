@@ -125,3 +125,83 @@ main:focus { outline: none; }
   .entrada__demo-botoes { grid-template-columns: repeat(3, 1fr); }
   .entrada__miolo { width: min(560px, 100%); }
 }
+
+/* ---- Aulas, individual e reservas ---- */
+.dias { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--e1); margin: var(--e4) 0 var(--e5); }
+.dias__botao {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-height: 56px;
+  padding: var(--e2) 0;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-p);
+  color: var(--texto-suave);
+  font-size: 0.75rem;
+  transition: background-color var(--rapido), border-color var(--rapido);
+}
+.dias__botao strong { font-size: 1.1rem; color: var(--texto); }
+.dias__botao:hover { border-color: var(--destaque); }
+.dias__botao[aria-pressed="true"] { background: var(--botao); border-color: var(--destaque); color: #fff; box-shadow: var(--brilho-sombra); }
+.dias__botao[aria-pressed="true"] strong { color: #fff; }
+
+.lista { display: grid; gap: var(--e3); margin: 0; padding: 0; list-style: none; }
+.item-aula, .item-reserva {
+  display: grid;
+  gap: var(--e3);
+  padding: var(--e4);
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+}
+.item-aula { grid-template-columns: auto 1fr; }
+.item-aula__hora { font-family: var(--fonte-titulo); font-size: 1.8rem; font-weight: 700; color: var(--destaque); }
+.item-aula__info h2, .item-reserva h2 { margin-bottom: var(--e1); font-size: 1.4rem; }
+.item-aula__info p, .item-reserva p { margin-bottom: var(--e1); }
+.item-aula__acao { grid-column: 1 / -1; display: grid; gap: var(--e1); }
+.item-aula__acao .botao { width: 100%; }
+.item-aula__motivo { margin: 0; font-size: 0.85rem; color: var(--texto-suave); }
+
+.chip {
+  display: inline-block;
+  margin: 0;
+  padding: 2px var(--e3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--destaque);
+  background: var(--azul-fundo);
+  border-radius: var(--raio-total);
+}
+.chip--espera { color: var(--aviso); background: var(--aviso-fundo); }
+.chip--cancelada { color: var(--texto-suave); background: var(--superficie-2); }
+
+.passo { margin: var(--e5) 0 var(--e3); font-size: 1.2rem; color: var(--texto-suave); }
+.opcoes { display: grid; gap: var(--e2); }
+.opcao {
+  display: grid;
+  gap: 2px;
+  min-height: 56px;
+  padding: var(--e3) var(--e4);
+  text-align: left;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-p);
+  transition: border-color var(--rapido), box-shadow var(--medio);
+}
+.opcao:hover { border-color: var(--destaque); }
+.opcao[aria-pressed="true"] { border-color: var(--destaque); box-shadow: var(--brilho-sombra); background: var(--azul-fundo); }
+.horarios { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: var(--e2); }
+
+.abas { display: flex; gap: var(--e2); margin: var(--e4) 0; border-bottom: 1px solid var(--borda); }
+.abas__botao { padding: var(--e3) var(--e4); min-height: 44px; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--texto-suave); font-weight: 600; }
+.abas__botao[aria-selected="true"] { color: var(--destaque); border-bottom-color: var(--destaque); }
+.vazio { display: grid; justify-items: start; gap: var(--e3); padding: var(--e5) 0; }
+.item-reserva { grid-template-columns: 1fr auto; align-items: center; }
+
+@media (min-width: 768px) {
+  .item-aula { grid-template-columns: 80px 1fr auto; align-items: center; }
+  .item-aula__acao { grid-column: auto; min-width: 220px; }
+  .opcoes { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .dias__botao { min-height: 64px; font-size: 0.85rem; }
+}

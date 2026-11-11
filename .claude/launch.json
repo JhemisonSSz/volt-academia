@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "volt",
+      "runtimeExecutable": "py",
+      "runtimeArgs": ["servir.py", "5500"],
+      "port": 5500
+    }
+  ]
+}

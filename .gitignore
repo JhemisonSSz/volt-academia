@@ -1,0 +1,8 @@
+# Cache e logs do Firebase CLI
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+node_modules/
+
+# Rascunhos das skills
+.superpowers/

@@ -4,7 +4,7 @@
 import { dataISO, paraData, criarSlug, telefoneValido } from "./formato.js";
 import { novoId } from "./id.js";
 import {
-  MENSAGENS, avaliarPedido, avaliarCancelamento, avaliarVagas, promocoes, novoVencimento, inicio,
+  MENSAGENS, avaliarPedido, avaliarCancelamento, avaliarVagas, promocoes, novoVencimento, inicio, somarDias,
 } from "./regras.js";
 
 const ativa = (r) => r.situacao !== "cancelada";
@@ -30,6 +30,23 @@ export function criarAcoes(dados, agora = () => new Date()) {
     fila = resultado.catch(() => {});
     return resultado;
   };
+
+  // Valida e grava um aluno (usada pelo painel e pela criação de matrícula). Não entra na fila sozinha:
+  // quem chama já está dentro dela.
+  async function gravarAluno(aluno) {
+    const estado = dados.ler();
+    if (!String(aluno.nome ?? "").trim()) return { ok: false, motivo: "Digite o nome do aluno." };
+    if (!whatsappValido(aluno.whatsapp)) return { ok: false, motivo: "WhatsApp inválido. Use DDD + número." };
+    if (!dataValida(aluno.vencimento)) return { ok: false, motivo: "Informe um vencimento válido." };
+    if (!estado.planos.some((p) => p.id === aluno.planoId)) return { ok: false, motivo: "Escolha um plano." };
+    let matricula = String(aluno.matricula ?? "").trim();
+    if (!matricula) matricula = String(Math.max(1000, ...estado.alunos.map((a) => Number(a.matricula) || 0)) + 1);
+    if (estado.alunos.some((a) => String(a.matricula) === matricula && a.id !== aluno.id)) {
+      return { ok: false, motivo: MENSAGENS.matriculaRepetida };
+    }
+    const salvo = await dados.salvar("alunos", { ...aluno, nome: aluno.nome.trim(), matricula });
+    return { ok: true, aluno: salvo };
+  }
 
   return {
     // Devolve o aluno ou null
@@ -73,7 +90,8 @@ export function criarAcoes(dados, agora = () => new Date()) {
       return { ok: true, promovida };
     }),
 
-    registrarPagamento: (alunoId) => enfileirar(async () => {
+    // forma: "pix", "cartao" (pagos pelo site, simulados) ou "recepcao" (registrado pelo admin)
+    registrarPagamento: (alunoId, forma = "recepcao") => enfileirar(async () => {
       const estado = dados.ler();
       const aluno = estado.alunos.find((a) => a.id === alunoId);
       const plano = estado.planos.find((p) => p.id === aluno?.planoId);
@@ -81,26 +99,18 @@ export function criarAcoes(dados, agora = () => new Date()) {
       const hoje = dataISO(agora());
       const vencimento = novoVencimento(aluno.vencimento, plano.meses, hoje);
       await dados.aplicar([
-        { colecao: "pagamentos", salvar: { id: novoId(), alunoId, nomeAluno: aluno.nome, data: hoje, valor: plano.valor, planoId: plano.id } },
+        { colecao: "pagamentos", salvar: { id: novoId(), alunoId, nomeAluno: aluno.nome, data: hoje, valor: plano.valor, planoId: plano.id, forma } },
         { colecao: "alunos", salvar: { ...aluno, vencimento } },
       ]);
       return { ok: true, vencimento };
     }),
 
-    salvarAluno: (aluno) => enfileirar(async () => {
-      const estado = dados.ler();
-      if (!String(aluno.nome ?? "").trim()) return { ok: false, motivo: "Digite o nome do aluno." };
-      if (!whatsappValido(aluno.whatsapp)) return { ok: false, motivo: "WhatsApp inválido. Use DDD + número." };
-      if (!dataValida(aluno.vencimento)) return { ok: false, motivo: "Informe um vencimento válido." };
-      if (!estado.planos.some((p) => p.id === aluno.planoId)) return { ok: false, motivo: "Escolha um plano." };
-      let matricula = String(aluno.matricula ?? "").trim();
-      if (!matricula) matricula = String(Math.max(1000, ...estado.alunos.map((a) => Number(a.matricula) || 0)) + 1);
-      if (estado.alunos.some((a) => String(a.matricula) === matricula && a.id !== aluno.id)) {
-        return { ok: false, motivo: MENSAGENS.matriculaRepetida };
-      }
-      const salvo = await dados.salvar("alunos", { ...aluno, nome: aluno.nome.trim(), matricula });
-      return { ok: true, aluno: salvo };
-    }),
+    salvarAluno: (aluno) => enfileirar(() => gravarAluno(aluno)),
+
+    // O visitante cria a própria matrícula: nasce com a primeira mensalidade pendente (venceu ontem),
+    // então só reserva depois de pagar (pelo site ou na recepção).
+    criarMatricula: ({ nome, whatsapp, planoId }) => enfileirar(() =>
+      gravarAluno({ nome, whatsapp, planoId, matricula: "", vencimento: somarDias(dataISO(agora()), -1) })),
 
     salvarAula: (aula) => enfileirar(async () => {
       const estado = dados.ler();

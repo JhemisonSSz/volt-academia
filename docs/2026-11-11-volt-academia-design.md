@@ -153,6 +153,8 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 19. A lista de espera sobe **sempre que sobrar vaga**: ao cancelar, ao excluir um aluno confirmado e ao aumentar as vagas da aula (revisão final).
 20. Mudar o dia ou o horário de uma aula que tem reservas futuras é recusado ("exclua a aula e crie outra"). Salvar aula/aluno exige horário, vencimento, professor e plano válidos; vencimento inválido conta como em atraso.
 21. Os dados de demonstração são refeitos a cada novo dia (a semente guarda `sementeEm`), para vencimentos e aulas nunca ficarem velhos. Mudanças feitas no navegador valem só até o dia seguinte ou até "Restaurar".
+23. **Criar matrícula pelo site:** na entrada, logo abaixo de "Entrar", o botão "Criar minha matrícula" pede nome, WhatsApp e plano. A matrícula é a próxima livre e o aluno nasce com a **primeira mensalidade pendente** (vencimento = ontem, sem pagamento): fica em atraso e só reserva depois de pagar.
+24. **Pagamento pelo site (simulado):** a tela de matrícula criada, a página Mensalidade e a faixa de atraso oferecem Pix (QR e "copia e cola" fictícios) e cartão de crédito. Nada é cobrado e nenhum dado de cartão é pedido. Pagar usa a mesma regra do painel (novo vencimento = hoje + meses do plano) e grava a `forma` (pix, cartao ou recepcao), mostrada no Resumo do painel.
 22. O painel mostra os **próximos 7 dias** (hoje + 6), a mesma janela em que o aluno reserva. O Resumo lista os pagamentos do mês, com "Aluno removido" quando o aluno foi excluído.
 
 ## 7b. Dados de demonstração (decididos no grilling)

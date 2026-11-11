@@ -248,3 +248,44 @@ test("criarNovoId funciona mesmo sem crypto.randomUUID (endereço http de rede l
   assert.ok(semUuid().length >= 8);
   assert.notEqual(semCrypto(), semCrypto());
 });
+
+// ---- Criar matrícula pelo site (o aluno nasce com a primeira mensalidade pendente) ----
+
+test("criarMatricula: gera a próxima matrícula e o aluno nasce em atraso, sem pagamento", async () => {
+  const { d, a } = novo();
+  const pagamentosAntes = d.ler().pagamentos.length;
+  const r = await a.criarMatricula({ nome: "  Paula Lima ", whatsapp: "(73) 98888-7777", planoId: "trimestral" });
+  assert.equal(r.ok, true);
+  assert.equal(r.aluno.matricula, "1013");
+  assert.equal(r.aluno.nome, "Paula Lima");
+  assert.equal(statusMensalidade(r.aluno.vencimento, HOJE), "em-atraso");
+  assert.equal(d.ler().pagamentos.length, pagamentosAntes);
+  assert.equal((await a.entrar("1013")).id, r.aluno.id);
+});
+
+test("criarMatricula: nome vazio, WhatsApp inválido e plano inexistente são recusados", async () => {
+  const { d, a } = novo();
+  const antes = d.ler().alunos.length;
+  assert.equal((await a.criarMatricula({ nome: " ", whatsapp: "73988887777", planoId: "mensal" })).ok, false);
+  assert.equal((await a.criarMatricula({ nome: "Paula", whatsapp: "123", planoId: "mensal" })).ok, false);
+  assert.equal((await a.criarMatricula({ nome: "Paula", whatsapp: "73988887777", planoId: "nao-existe" })).ok, false);
+  assert.equal(d.ler().alunos.length, antes);
+});
+
+test("aluno novo não reserva até pagar; depois de pagar (Pix) reserva", async () => {
+  const { d, a } = novo();
+  const { aluno } = await a.criarMatricula({ nome: "Paula", whatsapp: "73988887777", planoId: "mensal" });
+  const pedido = { alunoId: aluno.id, tipo: "aula", aulaId: "funcional-sab-0900", data: "2026-11-14" };
+  assert.equal((await a.reservar(pedido)).motivo, MENSAGENS.atraso);
+  const pagou = await a.registrarPagamento(aluno.id, "pix");
+  assert.equal(pagou.ok, true);
+  assert.equal(d.ler().pagamentos.find((p) => p.alunoId === aluno.id).forma, "pix");
+  assert.equal((await a.reservar(pedido)).ok, true);
+});
+
+test("registrarPagamento sem forma informada conta como pago na recepção", async () => {
+  const { d, a } = novo();
+  await a.registrarPagamento("carla");
+  const ultimo = d.ler().pagamentos.filter((p) => p.alunoId === "carla").pop();
+  assert.equal(ultimo.forma, "recepcao");
+});

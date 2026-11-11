@@ -183,3 +183,29 @@ main:focus { outline: none; }
   .opcoes { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   .dias__botao { min-height: 64px; font-size: 0.85rem; }
 }
+
+/* ---- Criar matrícula e pagamento (simulado) ---- */
+.entrada__form .botao { width: 100%; margin-top: var(--e2); }
+.entrada__form h2 { font-size: 1.8rem; }
+.faixa--aviso { color: var(--aviso); background: var(--aviso-fundo); border: 1px solid var(--aviso); }
+.matricula-criada { display: grid; gap: var(--e3); margin-bottom: var(--e5); }
+.matricula-criada p { margin: 0; }
+.matricula-numero { font-family: var(--fonte-titulo); font-size: clamp(3.5rem, 18vw, 5.5rem); font-weight: 700; line-height: 1; color: var(--destaque); text-shadow: 0 0 28px rgba(56, 163, 245, 0.45); }
+.cartao--espaco { margin-top: var(--e4); }
+
+.pagamento { display: grid; gap: var(--e3); padding: var(--e4); background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio); }
+.pagamento h2 { margin: 0; font-size: 1.6rem; }
+.pagamento > * { margin-top: 0; margin-bottom: 0; }
+.pagamento__valor { font-family: var(--fonte-titulo); font-size: 1.8rem; font-weight: 700; }
+.pagamento__recepcao { text-align: center; font-size: 0.9rem; }
+.pagamento--pago { border-color: var(--ok); background: var(--ok-fundo); }
+.pagamento__ok { display: flex; align-items: center; gap: var(--e2); font-weight: 700; color: var(--ok); }
+.nota-demo { font-size: 0.85rem; color: var(--aviso); }
+.pix { display: grid; gap: var(--e3); justify-items: center; }
+.qr { width: 160px; height: 160px; border-radius: var(--raio-p); }
+.pix__texto { display: grid; gap: var(--e2); width: 100%; }
+.pix__texto p { margin: 0; font-size: 0.85rem; }
+.codigo { display: block; padding: var(--e2) var(--e3); overflow-wrap: anywhere; background: var(--superficie-2); border: 1px solid var(--borda); border-radius: var(--raio-p); font-size: 0.8rem; }
+@media (min-width: 768px) {
+  .pix { grid-template-columns: auto 1fr; justify-items: start; align-items: center; }
+}

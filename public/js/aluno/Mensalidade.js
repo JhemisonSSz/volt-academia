@@ -3,6 +3,7 @@ import { html } from "../react.js";
 import { Cartao, Status } from "../componentes/basicos.js";
 import { dataBR, dataISO, moeda } from "../formato.js";
 import { statusMensalidade } from "../regras.js";
+import { PainelPagamento } from "./Pagamento.js";
 
 export function Mensalidade({ estado, aluno }) {
   const plano = estado.planos.find((p) => p.id === aluno.planoId);
@@ -20,8 +21,9 @@ export function Mensalidade({ estado, aluno }) {
         <div><dt>Valor</dt><dd className="numeros">${plano ? moeda(plano.valor) : "—"}</dd></div>
         <div><dt>Vencimento</dt><dd className="numeros">${dataBR(aluno.vencimento)}</dd></div>
       </dl>
-      <p className="suave">Para pagar ou trocar de plano, fale com a recepção.</p>
+      <p className="suave">Para trocar de plano, fale com a recepção.</p>
     <//>
+    ${status !== "em-dia" && plano ? html`<div className="cartao--espaco"><${PainelPagamento} aluno=${aluno} plano=${plano} /></div>` : null}
 
     <h2>Histórico de pagamentos</h2>
     ${pagamentos.length === 0

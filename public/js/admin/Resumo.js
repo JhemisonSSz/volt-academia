@@ -5,6 +5,8 @@ import { dataBR, dataISO, moeda } from "../formato.js";
 import { contagem, ocorrencias, receitaDoMes, statusMensalidade, inicio } from "../regras.js";
 import { nomeDoPagador } from "../descricao.js";
 
+const FORMAS = { pix: "Pix", cartao: "Cartão", recepcao: "Recepção" };
+
 export function Resumo({ estado }) {
   const agora = new Date();
   const hoje = dataISO(agora);
@@ -63,7 +65,7 @@ export function Resumo({ estado }) {
       : html`<ul className="lista-simples">${pagamentosDoMes.map((p) => html`<li key=${p.id}>
           <span className="numeros">${dataBR(p.data)}</span>
           <span className="pagador">${nomeDoPagador(estado, p)}</span>
-          <span className="suave">${estado.planos.find((x) => x.id === p.planoId)?.nome ?? "—"}</span>
+          <span className="suave">${estado.planos.find((x) => x.id === p.planoId)?.nome ?? "—"}${p.forma ? ` · ${FORMAS[p.forma] ?? p.forma}` : ""}</span>
           <span className="numeros">${moeda(p.valor)}</span>
         </li>`)}</ul>`}
   </div>`;

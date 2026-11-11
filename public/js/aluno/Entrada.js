@@ -4,6 +4,7 @@ import { Botao, Campo } from "../componentes/basicos.js";
 import { acoes } from "../componentes/usarEstado.js";
 import { MENSAGENS } from "../regras.js";
 import { Raio } from "../icones.js";
+import { CriarMatricula } from "./CriarMatricula.js";
 
 const DEMOS = [
   { matricula: "1001", texto: "Ana · em dia" },
@@ -15,6 +16,7 @@ export function Entrada({ aoEntrar }) {
   const [matricula, setMatricula] = useState("");
   const [erro, setErro] = useState("");
   const [ocupado, setOcupado] = useState(false);
+  const [criando, setCriando] = useState(false);
 
   async function tentar(valor) {
     setOcupado(true);
@@ -31,20 +33,23 @@ export function Entrada({ aoEntrar }) {
       <h1 className="entrada__titulo">Carregue sua energia.</h1>
       <p className="entrada__sub">Entre com sua matrícula e reserve sua aula.</p>
 
-      <form className="entrada__form" onSubmit=${(e) => { e.preventDefault(); tentar(matricula); }} noValidate>
-        <${Campo}
-          rotulo="Matrícula" value=${matricula} inputMode="numeric" autoComplete="off" erro=${erro}
-          onChange=${(e) => { setMatricula(e.target.value); setErro(""); }}
-        />
-        <${Botao} type="submit" carregando=${ocupado}>Entrar<//>
-      </form>
+      ${criando
+        ? html`<${CriarMatricula} aoEntrar=${aoEntrar} aoVoltar=${() => setCriando(false)} />`
+        : html`<form className="entrada__form" onSubmit=${(e) => { e.preventDefault(); tentar(matricula); }} noValidate>
+            <${Campo}
+              rotulo="Matrícula" value=${matricula} inputMode="numeric" autoComplete="off" erro=${erro}
+              onChange=${(e) => { setMatricula(e.target.value); setErro(""); }}
+            />
+            <${Botao} type="submit" carregando=${ocupado}>Entrar<//>
+            <${Botao} variante="secundario" onClick=${() => setCriando(true)}>Criar minha matrícula<//>
+          </form>`}
 
-      <div className="entrada__demo">
+      ${criando ? null : html`<div className="entrada__demo">
         <p className="entrada__demo-titulo">Quer só conhecer? Entre como aluno de demonstração:</p>
         <div className="entrada__demo-botoes">
           ${DEMOS.map((d) => html`<${Botao} key=${d.matricula} variante="secundario" onClick=${() => tentar(d.matricula)}>${d.texto}<//>`)}
         </div>
-      </div>
+      </div>`}
       <p className="entrada__rodape"><a href="admin.html">Painel da academia</a> · Projeto de demonstração</p>
     </div>
   </main>`;

@@ -12,6 +12,8 @@ tudo funciona direto no navegador, sem servidor e sem banco de dados (os dados f
 - Reserva **aulas coletivas** (com vagas e lista de espera) e **atendimento individual** (personal e avaliação física).
 - Vê as próprias reservas, cancela (até 2 horas antes) e acompanha a **mensalidade**.
 - Aluno com mensalidade em atraso **não consegue fazer novas reservas**.
+- **Criar matrícula** pela tela de entrada: o aluno novo nasce com a primeira mensalidade pendente e paga pelo site
+  (**Pix ou cartão, simulados**: nada é cobrado e nenhum dado de cartão é pedido) ou na recepção, pelo painel.
 
 **Painel** (`admin.html`)
 - Resumo do dia, alunos (busca, filtro, ficha, **registro de pagamento**), agenda da semana,

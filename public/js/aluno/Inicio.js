@@ -18,7 +18,7 @@ export function Inicio({ estado, aluno }) {
   return html`<div className="pagina">
     <h1>Olá, ${primeiroNome(aluno.nome)}</h1>
 
-    ${status === "em-atraso" ? html`<p className="faixa faixa--erro" role="alert"><${Alerta} /> ${MENSAGENS.atraso}</p>` : null}
+    ${status === "em-atraso" ? html`<p className="faixa faixa--erro" role="alert"><${Alerta} /> ${MENSAGENS.atraso} <a href="#/mensalidade">Pagar agora</a></p>` : null}
 
     <div className="grade-cartoes">
       <${Cartao} className="cartao--mensalidade">

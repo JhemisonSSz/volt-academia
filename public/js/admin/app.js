@@ -8,6 +8,10 @@ import { Raio, Grafico, Usuarios, Calendario, Haltere, Usuario, Cartao, Ajustes,
 import { Resumo } from "./Resumo.js";
 import { Alunos } from "./Alunos.js";
 import { Agenda } from "./Agenda.js";
+import { Aulas } from "./Aulas.js";
+import { Individual as IndividualAdmin } from "./Individual.js";
+import { Planos } from "./Planos.js";
+import { Config } from "./Config.js";
 
 const CHAVE = "volt-academia:admin";
 const lerSessao = () => { try { return sessionStorage.getItem(CHAVE) === "1"; } catch { return false; } };
@@ -23,8 +27,7 @@ const ITENS = [
   { rota: "config", texto: "Configurações", Icone: Ajustes },
 ];
 
-// Telas que chegam na próxima tarefa
-const EmBreve = () => html`<div className="pagina-admin"><p className="suave">Esta tela chega em breve.</p></div>`;
+const NaoExiste = () => html`<div className="pagina-admin"><h1>Página não encontrada</h1><a href="#/resumo">Voltar ao resumo</a></div>`;
 
 function Entrada({ aoEntrar }) {
   return html`<main id="conteudo" className="entrada">
@@ -62,7 +65,11 @@ function Aplicacao() {
     resumo: html`<${Resumo} estado=${estado} />`,
     alunos: html`<${Alunos} estado=${estado} />`,
     agenda: html`<${Agenda} estado=${estado} />`,
-  }[rota] ?? html`<${EmBreve} />`;
+    aulas: html`<${Aulas} estado=${estado} />`,
+    individual: html`<${IndividualAdmin} estado=${estado} />`,
+    planos: html`<${Planos} estado=${estado} />`,
+    config: html`<${Config} estado=${estado} />`,
+  }[rota] ?? html`<${NaoExiste} />`;
 
   return html`<div className="app-admin">
     <header className="admin-topo">

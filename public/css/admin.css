@@ -184,3 +184,57 @@ main:focus { outline: none; }
   .semana__dia { padding: var(--e2); }
   .semana__dia h2 { font-size: 1.05rem; flex-wrap: wrap; }
 }
+
+/* ---- Cadastros (aulas, individual, planos) e configurações ---- */
+.grupo { margin-top: var(--e5); }
+.grupo h2 { margin-bottom: var(--e3); font-size: 1.3rem; }
+.grupo .titulo-linha h2 { margin: 0; }
+.linha-edicao {
+  display: grid;
+  gap: var(--e1) var(--e3);
+  width: 100%;
+  min-height: 56px;
+  padding: var(--e3) var(--e4);
+  text-align: left;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-p);
+  transition: border-color var(--rapido);
+}
+.linha-edicao:hover { border-color: var(--destaque); }
+.linha-edicao__hora { font-family: var(--fonte-titulo); font-size: 1.4rem; font-weight: 700; color: var(--destaque); }
+.linha-edicao__nome { font-weight: 600; }
+
+.cartao--espaco { margin-top: var(--e4); }
+.interruptor-linha { display: flex; align-items: center; justify-content: space-between; gap: var(--e4); padding: var(--e3) 0; border-bottom: 1px solid var(--borda); }
+.interruptor-linha p { margin: 0; }
+.interruptor-linha__titulo { font-weight: 600; }
+.interruptor {
+  position: relative;
+  flex: none;
+  width: 52px;
+  height: 30px;
+  padding: 0;
+  background: var(--superficie-2);
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-total);
+  transition: background-color var(--medio), border-color var(--medio);
+}
+.interruptor__bolinha {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: var(--texto-suave);
+  border-radius: 50%;
+  transition: transform var(--medio) var(--curva), background-color var(--medio);
+}
+.interruptor[aria-checked="true"] { background: var(--botao); border-color: var(--destaque); }
+.interruptor[aria-checked="true"] .interruptor__bolinha { transform: translateX(22px); background: #fff; }
+
+@media (min-width: 768px) {
+  .linha-edicao { grid-template-columns: 1fr 1fr; align-items: center; }
+  .linha-edicao--aula { grid-template-columns: 80px 1fr 1.6fr; }
+  .linha-edicao--plano { grid-template-columns: 1fr 140px 1.4fr; }
+}

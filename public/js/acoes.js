@@ -114,6 +114,77 @@ export function criarAcoes(dados, agora = () => new Date()) {
       return { ok: true };
     }),
 
+    salvarPlano: (plano) => enfileirar(async () => {
+      const valor = Number(plano.valor);
+      const meses = Math.trunc(Number(plano.meses));
+      if (!String(plano.nome ?? "").trim()) return { ok: false, motivo: "Digite o nome do plano." };
+      if (!(valor > 0)) return { ok: false, motivo: "O valor precisa ser maior que zero." };
+      if (!(meses >= 1)) return { ok: false, motivo: "A duração precisa ser de pelo menos 1 mês." };
+      await dados.salvar("planos", { ...plano, nome: plano.nome.trim(), valor, meses });
+      return { ok: true };
+    }),
+
+    excluirPlano: (planoId) => enfileirar(async () => {
+      const usam = dados.ler().alunos.filter((a) => a.planoId === planoId).length;
+      if (usam > 0) return { ok: false, motivo: `${usam} ${usam === 1 ? "aluno usa" : "alunos usam"} este plano. Troque o plano deles antes.` };
+      await dados.remover("planos", planoId);
+      return { ok: true };
+    }),
+
+    salvarProfissional: (profissional) => enfileirar(async () => {
+      if (!String(profissional.nome ?? "").trim()) return { ok: false, motivo: "Digite o nome do profissional." };
+      await dados.salvar("profissionais", { ...profissional, nome: profissional.nome.trim(), especialidade: String(profissional.especialidade ?? "").trim() });
+      return { ok: true };
+    }),
+
+    // Não apaga quem ainda dá aula ou tem atendimento marcado; a disponibilidade vai junto
+    excluirProfissional: (profissionalId) => enfileirar(async () => {
+      const estado = dados.ler();
+      if (estado.aulas.some((a) => a.profissionalId === profissionalId)) {
+        return { ok: false, motivo: "Este profissional dá aulas coletivas. Troque o professor dessas aulas antes." };
+      }
+      if (estado.reservas.some((r) => r.profissionalId === profissionalId && ativa(r) && inicio(r.data, r.hora) > agora())) {
+        return { ok: false, motivo: "Há reservas futuras com este profissional. Cancele-as antes." };
+      }
+      await dados.aplicar([
+        ...estado.disponibilidade.filter((d) => d.profissionalId === profissionalId).map((d) => ({ colecao: "disponibilidade", remover: d.id })),
+        { colecao: "profissionais", remover: profissionalId },
+      ]);
+      return { ok: true };
+    }),
+
+    salvarServico: (servico) => enfileirar(async () => {
+      const duracao = Math.trunc(Number(servico.duracao));
+      if (!String(servico.nome ?? "").trim()) return { ok: false, motivo: "Digite o nome do serviço." };
+      if (!(duracao >= 1)) return { ok: false, motivo: "A duração precisa ser de pelo menos 1 minuto." };
+      await dados.salvar("servicos", { ...servico, nome: servico.nome.trim(), duracao });
+      return { ok: true };
+    }),
+
+    excluirServico: (servicoId) => enfileirar(async () => {
+      const estado = dados.ler();
+      if (estado.reservas.some((r) => r.servicoId === servicoId && ativa(r) && inicio(r.data, r.hora) > agora())) {
+        return { ok: false, motivo: "Há reservas futuras deste serviço. Cancele-as antes." };
+      }
+      await dados.aplicar([
+        ...estado.disponibilidade.filter((d) => d.servicoId === servicoId).map((d) => ({ colecao: "disponibilidade", remover: d.id })),
+        { colecao: "servicos", remover: servicoId },
+      ]);
+      return { ok: true };
+    }),
+
+    salvarDisponibilidade: (disp) => enfileirar(async () => {
+      if (!disp.profissionalId || !disp.servicoId) return { ok: false, motivo: "Escolha o profissional e o serviço." };
+      if (!disp.inicio || !disp.fim || disp.fim <= disp.inicio) return { ok: false, motivo: "O fim precisa ser depois do início." };
+      await dados.salvar("disponibilidade", { ...disp, diaSemana: Number(disp.diaSemana) });
+      return { ok: true };
+    }),
+
+    excluirDisponibilidade: (id) => enfileirar(async () => {
+      await dados.remover("disponibilidade", id);
+      return { ok: true };
+    }),
+
     reservasFuturasDaAula(aulaId) {
       return dados.ler().reservas.filter((r) => r.aulaId === aulaId && ativa(r) && inicio(r.data, r.hora) > agora()).length;
     },

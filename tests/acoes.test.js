@@ -110,3 +110,70 @@ test("salvarAula: não deixa baixar as vagas abaixo dos confirmados", async () =
   assert.match(r.motivo, /8 alunos confirmados/);
   assert.equal((await a.salvarAula({ ...danca, vagas: 10 })).ok, true);
 });
+
+// ---- Cadastros do painel: planos, profissionais, serviços e disponibilidade ----
+
+test("salvarPlano: valor e meses precisam fazer sentido", async () => {
+  const { d, a } = novo();
+  assert.equal((await a.salvarPlano({ nome: "", valor: 50, meses: 1 })).ok, false);
+  assert.equal((await a.salvarPlano({ nome: "Anual", valor: 0, meses: 12 })).ok, false);
+  assert.equal((await a.salvarPlano({ nome: "Anual", valor: 700, meses: 0 })).ok, false);
+  assert.equal((await a.salvarPlano({ nome: "Anual", valor: 700, meses: 12 })).ok, true);
+  assert.ok(d.ler().planos.some((p) => p.nome === "Anual" && p.valor === 700));
+});
+
+test("excluirPlano: recusa se algum aluno ainda usa", async () => {
+  const { d, a } = novo();
+  const r = await a.excluirPlano("mensal");
+  assert.equal(r.ok, false);
+  assert.match(r.motivo, /alunos usam este plano/);
+  await a.salvarPlano({ id: "vazio", nome: "Vazio", valor: 10, meses: 1 });
+  assert.equal((await a.excluirPlano("vazio")).ok, true);
+  assert.ok(!d.ler().planos.some((p) => p.id === "vazio"));
+});
+
+test("excluirProfissional: recusa se dá aulas ou tem reservas futuras", async () => {
+  const { d, a } = novo();
+  assert.match((await a.excluirProfissional("julia")).motivo, /dá aulas/);
+  await a.reservar({ alunoId: "ana", tipo: "individual", servicoId: "personal", profissionalId: "rafael", data: "2026-11-12", hora: "08:00" });
+  assert.match((await a.excluirProfissional("rafael")).motivo, /reservas futuras/);
+  assert.ok(d.ler().profissionais.some((p) => p.id === "rafael"));
+});
+
+test("excluirProfissional sem pendências leva a disponibilidade junto", async () => {
+  const { d, a } = novo();
+  assert.equal((await a.excluirProfissional("marina")).ok, true);
+  assert.ok(!d.ler().profissionais.some((p) => p.id === "marina"));
+  assert.ok(!d.ler().disponibilidade.some((x) => x.profissionalId === "marina"));
+});
+
+test("excluirServico: recusa com reservas futuras; sem elas leva a disponibilidade junto", async () => {
+  const { d, a } = novo();
+  await a.reservar({ alunoId: "ana", tipo: "individual", servicoId: "personal", profissionalId: "rafael", data: "2026-11-12", hora: "08:00" });
+  assert.match((await a.excluirServico("personal")).motivo, /reservas futuras/);
+  assert.equal((await a.excluirServico("avaliacao")).ok, true);
+  assert.ok(!d.ler().disponibilidade.some((x) => x.servicoId === "avaliacao"));
+});
+
+test("salvarDisponibilidade: o fim precisa ser depois do início", async () => {
+  const { d, a } = novo();
+  const base = { profissionalId: "rafael", servicoId: "personal", diaSemana: 6, inicio: "08:00", fim: "08:00" };
+  assert.equal((await a.salvarDisponibilidade(base)).motivo, "O fim precisa ser depois do início.");
+  assert.equal((await a.salvarDisponibilidade({ ...base, fim: "12:00" })).ok, true);
+  assert.ok(d.ler().disponibilidade.some((x) => x.diaSemana === 6 && x.profissionalId === "rafael"));
+});
+
+test("salvarProfissional e salvarServico: nome obrigatório e duração positiva", async () => {
+  const { a } = novo();
+  assert.equal((await a.salvarProfissional({ nome: " ", especialidade: "x" })).ok, false);
+  assert.equal((await a.salvarProfissional({ nome: "Paulo", especialidade: "Pilates" })).ok, true);
+  assert.equal((await a.salvarServico({ nome: "Pilates", duracao: 0 })).ok, false);
+  assert.equal((await a.salvarServico({ nome: "Pilates", duracao: 50 })).ok, true);
+});
+
+test("excluirDisponibilidade remove só aquele horário de atendimento", async () => {
+  const { d, a } = novo();
+  const antes = d.ler().disponibilidade.length;
+  assert.equal((await a.excluirDisponibilidade("disp-rafael-1")).ok, true);
+  assert.equal(d.ler().disponibilidade.length, antes - 1);
+});

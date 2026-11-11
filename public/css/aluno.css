@@ -1,0 +1,127 @@
+/* aluno.css — Telas da área do aluno: entrada, cabeçalho, menu e páginas. Pensado primeiro para celular. */
+
+/* ---- Logo ---- */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  margin: 0 0 var(--e4);
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--texto);
+  text-decoration: none;
+}
+.logo__raio {
+  display: inline-grid;
+  place-items: center;
+  color: var(--destaque);
+  filter: drop-shadow(0 0 8px var(--brilho));
+}
+.logo__leve { font-weight: 600; letter-spacing: 0.04em; color: var(--texto-suave); }
+.logo--pequeno { margin: 0; font-size: 1.3rem; }
+
+/* ---- Entrada ---- */
+.entrada {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: var(--e5) var(--e4);
+  background:
+    radial-gradient(60% 50% at 80% 0%, rgba(56, 163, 245, 0.22), transparent 70%),
+    radial-gradient(50% 40% at 0% 100%, rgba(11, 92, 173, 0.28), transparent 70%),
+    var(--fundo);
+}
+.entrada__miolo { width: min(440px, 100%); }
+.entrada__titulo {
+  margin-bottom: var(--e2);
+  font-size: clamp(2.75rem, 12vw, 4.5rem);
+  text-shadow: 0 0 32px rgba(56, 163, 245, 0.35);
+}
+.entrada__sub { margin-bottom: var(--e6); font-size: 1.1rem; color: var(--texto-suave); }
+.entrada__form { margin-bottom: var(--e6); }
+.entrada__form .botao { width: 100%; }
+.entrada__demo { padding-top: var(--e5); border-top: 1px solid var(--borda); }
+.entrada__demo-titulo { font-size: 0.9rem; color: var(--texto-suave); }
+.entrada__demo-botoes { display: grid; gap: var(--e2); }
+.entrada__rodape { margin: var(--e6) 0 0; font-size: 0.85rem; color: var(--texto-suave); }
+
+/* ---- Estrutura com cabeçalho e menu ---- */
+.app-aluno { min-height: 100dvh; padding-bottom: 88px; }
+
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+  padding: var(--e2) var(--e4);
+  background: var(--fundo);
+  border-bottom: 1px solid var(--borda);
+  /* Sem backdrop-filter aqui: ele faria o menu (position: fixed) se prender dentro do cabeçalho */
+}
+.topo__usuario { display: flex; align-items: center; gap: var(--e2); }
+.topo__nome { color: var(--texto); font-weight: 600; text-decoration: none; }
+.so-desktop { display: none; }
+
+/* Menu: barra fixa embaixo no celular */
+.menu {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--superficie);
+  border-top: 1px solid var(--borda-forte);
+}
+.menu__item {
+  flex: 1;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: var(--e2) var(--e1);
+  min-height: 56px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+  text-decoration: none;
+}
+.menu__item[aria-current="page"] { color: var(--destaque); font-weight: 600; }
+.menu__item:hover { color: var(--texto); }
+
+/* ---- Páginas ---- */
+.pagina { max-width: 960px; margin: 0 auto; padding: var(--e5) var(--e4); }
+.pagina > h1 { font-size: clamp(2rem, 7vw, 2.75rem); }
+.pagina > h2 { margin-top: var(--e6); }
+main:focus { outline: none; }
+
+.grade-cartoes { display: grid; gap: var(--e4); margin: var(--e5) 0; }
+.cartao--energia { background: linear-gradient(135deg, rgba(11, 92, 173, 0.35), var(--superficie) 70%); border-color: rgba(56, 163, 245, 0.4); }
+.cartao--energia .cartao__titulo svg { color: var(--destaque); filter: drop-shadow(0 0 6px var(--brilho)); }
+.energia__numero { margin-bottom: var(--e1); font-family: var(--fonte-titulo); font-size: 1.9rem; font-weight: 700; line-height: 1.15; }
+.proxima__titulo { margin-bottom: var(--e1); font-family: var(--fonte-titulo); font-size: 1.6rem; font-weight: 700; }
+
+/* ---- Tablet e computador ---- */
+@media (min-width: 768px) {
+  .app-aluno { padding-bottom: 0; }
+  .topo { padding: var(--e2) var(--e6); }
+  .so-desktop { display: inline; }
+
+  /* O menu sobe para o cabeçalho */
+  .menu { position: static; padding: 0; background: none; border: 0; gap: var(--e2); }
+  .menu__item { flex: none; display: flex; align-items: center; gap: var(--e2); padding: var(--e2) var(--e4); font-size: 1rem; border-radius: var(--raio-p); }
+  .menu__item[aria-current="page"] { background: var(--azul-fundo); }
+  .topo { display: grid; grid-template-columns: auto 1fr auto; }
+  .menu { justify-content: center; }
+
+  .grade-cartoes { grid-template-columns: repeat(3, 1fr); }
+  .avisos { bottom: var(--e5); }
+  .botao--largo { width: auto; }
+  .entrada__demo-botoes { grid-template-columns: repeat(3, 1fr); }
+  .entrada__miolo { width: min(560px, 100%); }
+}

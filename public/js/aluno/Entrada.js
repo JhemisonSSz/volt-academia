@@ -17,6 +17,7 @@ export function Entrada({ aoEntrar }) {
   const [erro, setErro] = useState("");
   const [ocupado, setOcupado] = useState(false);
   const [criando, setCriando] = useState(false);
+  const [fotoPronta, setFotoPronta] = useState(false); // a foto aparece suavemente depois de carregar
 
   async function tentar(valor) {
     setOcupado(true);
@@ -28,6 +29,8 @@ export function Entrada({ aoEntrar }) {
   }
 
   return html`<main id="conteudo" className="entrada">
+    <img className=${`entrada__fundo ${fotoPronta ? "entrada__fundo--pronto" : ""}`} ref=${(el) => { if (el?.complete && el.naturalWidth) setFotoPronta(true); }} onLoad=${() => setFotoPronta(true)} src="img/entrada-800.jpg" srcSet="img/entrada-800.jpg 800w, img/entrada-1600.jpg 1600w" sizes="100vw"
+      alt="" width="800" height="1200" fetchPriority="high" decoding="async" />
     <div className="entrada__miolo">
       <p className="logo"><span className="logo__raio"><${Raio} tamanho=${28} /></span> VOLT <span className="logo__leve">Academia</span></p>
       <h1 className="entrada__titulo">Carregue sua energia.</h1>
@@ -51,6 +54,7 @@ export function Entrada({ aoEntrar }) {
         </div>
       </div>`}
       <p className="entrada__rodape"><a href="admin.html">Painel da academia</a> · Projeto de demonstração</p>
+      <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>
     </div>
   </main>`;
 }

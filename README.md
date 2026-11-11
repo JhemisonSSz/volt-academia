@@ -61,6 +61,13 @@ firebase deploy --project <id-do-projeto> --only hosting
 
 Sempre informe o `--project` para não publicar no projeto errado.
 
+## Créditos
+
+- Foto da tela de entrada: [Airam Dato-on](https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/), no Pexels
+  ([licença do Pexels](https://www.pexels.com/license/): uso livre, inclusive comercial). Duas versões em `public/img/`:
+  `entrada-800.jpg` (celular, ~51 KB) e `entrada-1600.jpg` (computador, ~185 KB).
+- Fontes: Barlow e Barlow Condensed (Google Fonts, licença OFL).
+
 ## Tecnologia
 
 HTML, CSS (variáveis, grid) e **React 18 + htm** carregados do CDN (`esm.sh`) — sem build, sem `npm install`

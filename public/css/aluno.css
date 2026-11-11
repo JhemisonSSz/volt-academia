@@ -2,16 +2,35 @@
 
 /* ---- Entrada ---- */
 .entrada {
+  position: relative;
   display: grid;
-  place-items: center;
+  place-items: start center;
   min-height: 100dvh;
-  padding: var(--e5) var(--e4);
+  padding: 0 var(--e4) var(--e5);
+  isolation: isolate;
+  overflow: hidden;
   background:
     radial-gradient(60% 50% at 80% 0%, rgba(56, 163, 245, 0.22), transparent 70%),
     radial-gradient(50% 40% at 0% 100%, rgba(11, 92, 173, 0.28), transparent 70%),
     var(--fundo);
 }
-.entrada__miolo { width: min(440px, 100%); }
+/* Foto de academia (Pexels): no celular ocupa o topo e some aos poucos no fundo escuro */
+.entrada__fundo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 56dvh;
+  object-fit: cover;
+  object-position: center 40%;
+  z-index: -2; /* a camada escura (::before) fica entre a foto e o texto */
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  opacity: 0;
+  transition: opacity 700ms ease-out;
+}
+.entrada__fundo--pronto { opacity: 1; }
+.entrada__miolo { width: min(440px, 100%); padding-top: 35dvh; }
 .entrada__titulo {
   margin-bottom: var(--e2);
   font-size: clamp(2.75rem, 12vw, 4.5rem);
@@ -24,6 +43,7 @@
 .entrada__demo-titulo { font-size: 0.9rem; color: var(--texto-suave); }
 .entrada__demo-botoes { display: grid; gap: var(--e2); }
 .entrada__rodape { margin: var(--e6) 0 0; font-size: 0.85rem; color: var(--texto-suave); }
+.entrada__credito { margin: var(--e1) 0 0; font-size: 0.75rem; color: var(--texto-suave); }
 
 /* ---- Estrutura com cabeçalho e menu ---- */
 .app-aluno { min-height: 100dvh; padding-bottom: 88px; }
@@ -208,4 +228,24 @@ main:focus { outline: none; }
 .codigo { display: block; padding: var(--e2) var(--e3); overflow-wrap: anywhere; background: var(--superficie-2); border: 1px solid var(--borda); border-radius: var(--raio-p); font-size: 0.8rem; }
 @media (min-width: 768px) {
   .pix { grid-template-columns: auto 1fr; justify-items: start; align-items: center; }
+}
+
+/* ---- Entrada em telas grandes: foto de fundo inteiro, conteúdo à esquerda ---- */
+@media (min-width: 900px) {
+  .entrada { place-items: center start; padding: var(--e6) var(--e7); }
+  .entrada__fundo {
+    height: 100%;
+    object-position: center 33%;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  /* Escurece o lado do texto para o contraste continuar bom */
+  .entrada::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(10, 15, 24, 0.94) 0%, rgba(10, 15, 24, 0.8) 38%, rgba(10, 15, 24, 0.15) 72%, rgba(10, 15, 24, 0.35) 100%);
+  }
+  .entrada__miolo { padding-top: 0; width: min(520px, 100%); }
 }

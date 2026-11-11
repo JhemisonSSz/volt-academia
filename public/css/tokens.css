@@ -1,0 +1,61 @@
+/* tokens.css — Todas as cores, espaços e tempos do site num lugar só.
+   Os outros CSS usam só estas variáveis (nada de cor solta). */
+:root {
+  /* Fundo e superfícies */
+  --fundo: #0a0f18;
+  --superficie: #121a28;
+  --superficie-2: #1a2436;
+  --borda: rgba(207, 228, 248, 0.12);
+  --borda-forte: rgba(207, 228, 248, 0.24);
+
+  /* Texto */
+  --texto: #f5f9ff;
+  --texto-suave: #9fb4cc;
+
+  /* Azul suave da JhemisonTech */
+  --destaque: #38a3f5;
+  --botao: #0b5cad;
+  --botao-hover: #0d6bc9;
+  --brilho: #38a3f5;
+  --azul-fundo: rgba(56, 163, 245, 0.12);
+
+  /* Estados (sempre com ícone + texto) */
+  --ok: #4ade80;
+  --aviso: #facc15;
+  --erro: #f87171;
+  --ok-fundo: rgba(74, 222, 128, 0.12);
+  --aviso-fundo: rgba(250, 204, 21, 0.12);
+  --erro-fundo: rgba(248, 113, 113, 0.12);
+  --perigo: #b42323;
+
+  /* Espaços (múltiplos de 4px) */
+  --e1: 4px;
+  --e2: 8px;
+  --e3: 12px;
+  --e4: 16px;
+  --e5: 24px;
+  --e6: 32px;
+  --e7: 48px;
+  --e8: 64px;
+
+  /* Formas e sombras */
+  --raio: 12px;
+  --raio-p: 8px;
+  --raio-total: 999px;
+  --brilho-sombra: 0 0 24px rgba(56, 163, 245, 0.35);
+  --sombra: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* Tempos */
+  --rapido: 150ms;
+  --medio: 250ms;
+  --curva: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Fontes */
+  --fonte-titulo: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --fonte-texto: "Barlow", system-ui, sans-serif;
+
+  /* Camadas */
+  --z-nav: 20;
+  --z-modal: 100;
+  --z-aviso: 1000;
+}

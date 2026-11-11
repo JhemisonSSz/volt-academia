@@ -103,13 +103,13 @@ volt-academia/
 - Bruno (1002): vence em 3 dias.
 - Carla (1003): em atraso há 7 dias.
 
-A semente também inclui cerca de 8 alunos extras, 4 profissionais, cerca de 12 aulas por semana e reservas já feitas, para as barras de vagas e o painel não ficarem vazios. Todos os nomes e números de WhatsApp são fictícios.
+A Ana tem treinos passados nas últimas semanas, para o cartão de energia aparecer cheio. A semente também inclui cerca de 8 alunos extras, 4 profissionais, cerca de 12 aulas por semana e reservas já feitas, para as barras de vagas e o painel não ficarem vazios. Todos os nomes e números de WhatsApp são fictícios.
 
 ## 6. Telas
 
 ### Área do aluno (`index.html`), pensada primeiro para celular
 1. **Entrada:** logo Volt com brilho, título **"Carregue sua energia."**, subtítulo *"Entre com sua matrícula e reserve sua aula."*, campo Matrícula + Entrar e botões demo Ana (em dia), Bruno (vence em 3 dias) e Carla (em atraso). O navegador lembra o último aluno.
-2. **Início:** saudação, cartão da mensalidade (status, plano, vencimento), próxima reserva e atalho Reservar.
+2. **Início:** saudação, cartão da mensalidade (status, plano, vencimento), **cartão de energia** (ícone de raio em SVG + "9 treinos este mês · 3 semanas seguidas treinando", regra 11), próxima reserva e atalho Reservar.
 3. **Aulas:** seletor dos 7 dias e cartões (hora, nome, professor, BarraVagas "12 de 20"). Botões Reservar, Cancelar ou Entrar na lista de espera.
 4. **Individual:** serviço, profissional, dia e horários livres em botões.
 5. **Minhas reservas:** próximas e passadas, com Cancelar.
@@ -141,6 +141,7 @@ A semente também inclui cerca de 8 alunos extras, 4 profissionais, cerca de 12 
 8. Individual: horários livres = janelas da disponibilidade divididas pela duração do serviço, menos as reservas ativas daquele profissional. Cada horário tem 1 vaga.
 9. Admin: não salva uma aula com `vagas` menor que o número de confirmados na próxima ocorrência. Mostra o motivo.
 10. Aulas coletivas: o aluno reserva até **7 dias à frente**.
+11. `resumoEnergia(reservas, hoje)` → `treinosNoMes` = reservas `confirmada` do aluno com início já passado dentro do mês atual (sem controle de presença, conta como treino feito). `semanasSeguidas` = quantas semanas consecutivas (de segunda a domingo), contando para trás a partir da semana atual, têm ao menos 1 treino. Se a semana atual ainda não tem treino, a contagem começa na semana anterior. Com zero treinos, o cartão mostra "Sua primeira carga de energia começa hoje" e o atalho Reservar.
 
 ## 8. Erros e mensagens
 

@@ -34,6 +34,9 @@
 .entrada__titulo { margin-bottom: var(--e2); font-size: clamp(2.75rem, 12vw, 4.5rem); text-shadow: 0 0 32px rgba(56, 163, 245, 0.35); }
 .entrada__sub { margin-bottom: var(--e6); font-size: 1.1rem; color: var(--texto-suave); }
 .entrada__rodape { margin: var(--e6) 0 0; font-size: 0.85rem; color: var(--texto-suave); }
+.entrada__form { margin-bottom: var(--e4); }
+.entrada__form .botao { width: 100%; margin-top: var(--e2); }
+.entrada__aviso { margin: 0; font-size: 0.9rem; color: var(--texto); }
 .entrada__credito { margin: var(--e1) 0 0; font-size: 0.75rem; color: var(--texto-suave); }
 
 /* Entrada em telas grandes: foto de fundo inteiro, conteúdo à esquerda */

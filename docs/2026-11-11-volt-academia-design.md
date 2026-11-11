@@ -5,14 +5,14 @@ Status: implementada (decisões do grilling incluídas)
 
 ## 1. Objetivo
 
-Projeto de **portfólio** da JhemisonTech: site de agendamento (área do aluno) e painel admin para uma academia **fictícia** chamada **Volt Academia**. Deve funcionar sozinho para qualquer visitante, sem servidor e sem senha. Se um cliente real fechar, a camada de dados é trocada por Firebase (ver seção 4).
+Projeto de **portfólio** da JhemisonTech: site de agendamento (área do aluno) e painel admin para uma academia **fictícia** chamada **Volt Academia**. Deve funcionar sozinho para qualquer visitante, sem servidor. A área do aluno é aberta; o painel pede senha (regra 26). Se um cliente real fechar, a camada de dados é trocada por Firebase (ver seção 4).
 
 O site usa só o nome **Volt Academia**: nenhuma marca do autor aparece nas telas.
 
 **Sucesso =** um visitante do portfólio, pelo celular ou computador, consegue em poucos cliques:
 - entrar como aluno de demonstração, reservar e cancelar aula coletiva e atendimento individual;
 - ver o bloqueio de um aluno em atraso;
-- entrar no painel, registrar o pagamento desse aluno e ver o bloqueio sumir.
+- entrar no painel (com o acesso liberado), registrar o pagamento desse aluno e ver o bloqueio sumir.
 
 ## 2. Decisões tomadas
 
@@ -118,7 +118,7 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 **Navegação:** barra inferior (Início, Aulas, Individual, Reservas) no celular e menu no topo no computador. A Mensalidade fica acessível pelo cartão do Início e pelo menu do usuário. Uma aba desligada no painel some da navegação.
 
 ### Painel admin (`admin.html`)
-- Entrada: botão "Entrar como admin (demo)".
+- Entrada: **usuário e senha** (regra 26; antes era um botão de demonstração sem senha).
 - **Resumo:** reservas de hoje, ocupação da semana, alunos em atraso, receita do mês.
 - **Alunos:** busca, filtro por status, ficha (plano, vencimento, Registrar pagamento, histórico), criar e editar.
 - **Agenda:** grade dos próximos 7 dias (aulas + individuais) e lista de quem reservou.
@@ -156,6 +156,7 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 23. **Criar matrícula pelo site:** na entrada, logo abaixo de "Entrar", o botão "Criar minha matrícula" pede nome, WhatsApp e plano. A matrícula é a próxima livre e o aluno nasce com a **primeira mensalidade pendente** (vencimento = ontem, sem pagamento): fica em atraso e só reserva depois de pagar.
 24. **Pagamento pelo site (simulado):** a tela de matrícula criada, a página Mensalidade e a faixa de atraso oferecem Pix (QR e "copia e cola" fictícios) e cartão de crédito. Nada é cobrado e nenhum dado de cartão é pedido. Pagar usa a mesma regra do painel (novo vencimento = hoje + meses do plano) e grava a `forma` (pix, cartao ou recepcao), mostrada no Resumo do painel.
 25. **Foto na entrada do aluno e na do painel:** uma foto de academia (Pexels, Airam Dato-on, licença livre) aparece no topo no celular, com fade para o fundo escuro, e em tela cheia no computador (a partir de 900px), com uma camada escura do lado do texto para manter o contraste. Duas versões (800 e 1600 px) via `srcset`; a foto surge com fade ao carregar. O crédito fica no rodapé da tela e no README.
+26. **Login do painel (decisão de 2026-11-11):** o painel pede usuário e senha, para que só quem pedir o acesso (e demonstrar interesse) o veja. É uma porta de fachada em JavaScript, sem segurança de verdade, já que não há dado real nem servidor. A senha nunca fica no projeto: `npm run senha` grava só um resumo SHA-256 com sal e 10 mil repetições em `public/js/acesso-config.js`. Mensagem única para erro de usuário ou de senha. Sem senha configurada, ninguém entra.
 22. O painel mostra os **próximos 7 dias** (hoje + 6), a mesma janela em que o aluno reserva. O Resumo lista os pagamentos do mês, com "Aluno removido" quando o aluno foi excluído.
 
 ## 7b. Dados de demonstração (decididos no grilling)

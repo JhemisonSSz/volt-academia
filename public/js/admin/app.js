@@ -3,7 +3,8 @@ import { html, createRoot, useEffect, useRef, useState } from "../react.js";
 import { usarEstado, usarRota } from "../componentes/usarEstado.js";
 import { AvisosProvider } from "../componentes/avisos.js";
 import { Confirmador } from "../componentes/modal.js";
-import { Botao } from "../componentes/basicos.js";
+import { Botao, Campo } from "../componentes/basicos.js";
+import { verificarAcesso } from "../acesso.js";
 import { Raio, Grafico, Usuarios, Calendario, Haltere, Usuario, Cartao, Ajustes, Sair, Menu, X } from "../icones.js";
 import { Resumo } from "./Resumo.js";
 import { Alunos } from "./Alunos.js";
@@ -31,6 +32,21 @@ const NaoExiste = () => html`<div className="pagina-admin"><h1>Página não enco
 
 function Entrada({ aoEntrar }) {
   const [fotoPronta, setFotoPronta] = useState(false); // a foto aparece suavemente depois de carregar
+  const [usuario, setUsuario] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [conferindo, setConferindo] = useState(false);
+
+  async function entrar(e) {
+    e.preventDefault();
+    setConferindo(true);
+    await new Promise((r) => setTimeout(r, 30)); // deixa o botão mostrar "carregando" antes da conta
+    const resultado = verificarAcesso(usuario, senha);
+    setConferindo(false);
+    if (!resultado.ok) { setSenha(""); return setErro(resultado.motivo); }
+    aoEntrar();
+  }
+
   return html`<main id="conteudo" className="entrada">
     <img className=${`entrada__fundo ${fotoPronta ? "entrada__fundo--pronto" : ""}`} ref=${(el) => { if (el?.complete && el.naturalWidth) setFotoPronta(true); }} onLoad=${() => setFotoPronta(true)}
       src="img/entrada-800.jpg" srcSet="img/entrada-800.jpg 800w, img/entrada-1600.jpg 1600w" sizes="100vw" alt="" width="800" height="1200" fetchPriority="high" decoding="async" />
@@ -38,7 +54,14 @@ function Entrada({ aoEntrar }) {
       <p className="logo"><span className="logo__raio"><${Raio} tamanho=${28} /></span> VOLT <span className="logo__leve">Academia</span></p>
       <h1 className="entrada__titulo">Painel Volt</h1>
       <p className="entrada__sub">Gerencie alunos, aulas, agenda e mensalidades.</p>
-      <${Botao} className="botao--largo" onClick=${aoEntrar}>Entrar como admin (demo)<//>
+      <form className="entrada__form" onSubmit=${entrar} noValidate>
+        <${Campo} rotulo="Usuário" autoComplete="username" autoCapitalize="none" value=${usuario}
+          onChange=${(e) => { setUsuario(e.target.value); setErro(""); }} />
+        <${Campo} rotulo="Senha" tipo="password" autoComplete="current-password" value=${senha} erro=${erro}
+          onChange=${(e) => { setSenha(e.target.value); setErro(""); }} />
+        <${Botao} type="submit" carregando=${conferindo}>Entrar<//>
+      </form>
+      <p className="entrada__aviso">Painel restrito. Quer ver como ele funciona? Peça o acesso pelo <a href="https://jhemisontech.web.app/" target="_blank" rel="noopener">portfólio JhemisonTech</a>.</p>
       <p className="entrada__rodape">Demonstração: os dados ficam só neste navegador. · <a href="index.html">Ver site do aluno</a></p>
       <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>
     </div>

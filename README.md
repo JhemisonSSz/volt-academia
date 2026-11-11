@@ -18,7 +18,7 @@ tudo funciona direto no navegador, sem servidor e sem banco de dados (os dados f
 **Painel** (`admin.html`)
 - Resumo do dia, alunos (busca, filtro, ficha, **registro de pagamento**), agenda da semana,
   aulas, atendimento individual, planos e configurações.
-- Botão **"Entrar como admin (demo)"**: não tem senha.
+- **Pede usuário e senha** (veja "Acesso ao painel" abaixo). Quem quer conhecer o painel pede o acesso.
 
 ## Alunos de demonstração
 
@@ -30,6 +30,23 @@ tudo funciona direto no navegador, sem servidor e sem banco de dados (os dados f
 
 As datas se ajustam sozinhas a "hoje", e os dados de exemplo são refeitos a cada novo dia (o que você mudar vale só até o dia seguinte). Para voltar aos dados de exemplo na hora:
 painel → **Configurações** → *Restaurar dados de demonstração*.
+
+## Acesso ao painel
+
+O painel pede usuário e senha. A senha **não fica no projeto**: você define uma vez, no seu computador, e só o
+"resumo criptografado" dela é gravado em `public/js/acesso-config.js`.
+
+```bash
+npm run senha
+```
+
+O comando pergunta o usuário (padrão: `admin`) e a senha (mínimo 8 caracteres, não aparece enquanto você digita).
+Depois é só publicar de novo. Para trocar a senha, rode o comando outra vez. Enquanto nenhuma senha for definida,
+ninguém entra no painel (aparece "O acesso ao painel ainda não foi configurado.").
+
+> **Importante:** como o site é só de arquivos estáticos, esse login é uma *porta de fachada*: barra o acesso casual,
+> mas quem ler o código consegue contornar. Não há nenhum dado real a proteger (tudo fica no navegador de cada
+> visitante). Para proteção de verdade, o caminho é o Firebase Authentication (veja o COMO-FUNCIONA.md).
 
 ## Como rodar
 

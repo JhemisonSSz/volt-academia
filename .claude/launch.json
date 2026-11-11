@@ -4,7 +4,7 @@
     {
       "name": "volt",
       "runtimeExecutable": "py",
-      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "public"],
+      "runtimeArgs": ["servir.py", "5500"],
       "port": 5500
     }
   ]

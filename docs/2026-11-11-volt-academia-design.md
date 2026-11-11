@@ -1,7 +1,7 @@
 # Volt Academia — Especificação de design
 
 Data: 2026-11-11
-Status: aprovada (decisões do grilling incluídas)
+Status: implementada (decisões do grilling incluídas)
 
 ## 1. Objetivo
 

@@ -3,7 +3,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  somarMeses, statusMensalidade, diasParaVencer, novoVencimento, resumoEnergia, receitaDoMes,
+  MENSAGENS, somarMeses, statusMensalidade, diasParaVencer, novoVencimento, resumoEnergia, receitaDoMes,
+  ocorrencias, avaliarPedido, avaliarCancelamento, quemSobe, horariosLivres, avaliarVagas, duracaoDaReserva,
 } from "../public/js/regras.js";
 
 const AGORA = new Date(2026, 10, 11, 10, 0); // quarta-feira, 11/11/2026, 10h
@@ -49,4 +50,102 @@ test("resumoEnergia: semana atual vazia começa a contar da anterior", () => {
 test("receitaDoMes: soma só pagamentos do mês atual", () => {
   const p = [{ data: "2026-11-01", valor: 80 }, { data: "2026-11-11", valor: 220 }, { data: "2026-10-31", valor: 80 }];
   assert.equal(receitaDoMes(p, HOJE), 300);
+});
+
+// ---- Grade, reservas, espera e horários livres ----
+
+// Estado pequeno: Dança (qui 19:00, 2 vagas) e Spinning (qui 19:30) + Personal com Rafael
+function estadoTeste() {
+  return {
+    config: { aulasLigadas: true, individualLigado: true },
+    alunos: [
+      { id: "a", matricula: "1", nome: "A", vencimento: "2026-12-01" },
+      { id: "c", matricula: "3", nome: "C", vencimento: "2026-11-04" },
+    ],
+    aulas: [
+      { id: "danca", nome: "Dança", diaSemana: 4, hora: "19:00", duracao: 60, vagas: 2 },
+      { id: "spin", nome: "Spinning", diaSemana: 4, hora: "19:30", duracao: 45, vagas: 15 },
+    ],
+    servicos: [{ id: "personal", nome: "Personal", duracao: 60 }],
+    disponibilidade: [{ id: "d1", profissionalId: "rafael", servicoId: "personal", diaSemana: 4, inicio: "06:00", fim: "10:00" }],
+    reservas: [],
+  };
+}
+
+const HORAS = { danca: "19:00", spin: "19:30" };
+const res = (alunoId, aulaId, data, situacao) =>
+  ({ alunoId, tipo: "aula", aulaId, data, hora: HORAS[aulaId] ?? "19:00", situacao, criadaEm: "2026-11-10T08:00:00" });
+
+test("ocorrencias: próximos 7 dias em ordem", () => {
+  const e = estadoTeste();
+  assert.deepEqual(ocorrencias(e.aulas, HOJE, 7).map((o) => `${o.data} ${o.hora}`),
+    ["2026-11-12 19:00", "2026-11-12 19:30"]);
+});
+
+test("avaliarPedido: confirma até lotar, depois espera", () => {
+  const e = estadoTeste();
+  const p = { alunoId: "a", tipo: "aula", aulaId: "danca", data: "2026-11-12" };
+  assert.deepEqual(avaliarPedido(e, p, AGORA), { ok: true, situacao: "confirmada" });
+  e.reservas.push(res("x", "danca", "2026-11-12", "confirmada"), res("y", "danca", "2026-11-12", "confirmada"));
+  assert.deepEqual(avaliarPedido(e, p, AGORA), { ok: true, situacao: "espera" });
+});
+
+test("avaliarPedido: bloqueios na ordem certa", () => {
+  const e = estadoTeste();
+  const p = { alunoId: "a", tipo: "aula", aulaId: "danca", data: "2026-11-12" };
+  assert.equal(avaliarPedido(e, { ...p, alunoId: "c" }, AGORA).motivo, MENSAGENS.atraso);
+  assert.equal(avaliarPedido(e, { ...p, data: "2026-11-19" }, AGORA).motivo, MENSAGENS.longe);
+  assert.equal(avaliarPedido(e, p, new Date(2026, 10, 12, 19, 0)).motivo, MENSAGENS.passou);
+  e.reservas.push(res("a", "danca", "2026-11-12", "confirmada"));
+  assert.equal(avaliarPedido(e, p, AGORA).motivo, MENSAGENS.repetida);
+  assert.equal(avaliarPedido(e, { ...p, aulaId: "spin" }, AGORA).motivo, "Você já tem uma reserva às 19:00.");
+  e.config.aulasLigadas = false;
+  assert.equal(avaliarPedido(e, { ...p, aulaId: "spin" }, AGORA).motivo, MENSAGENS.desligado);
+});
+
+test("avaliarPedido: individual só em horário livre", () => {
+  const e = estadoTeste();
+  const p = { alunoId: "a", tipo: "individual", servicoId: "personal", profissionalId: "rafael", data: "2026-11-12", hora: "07:00" };
+  assert.deepEqual(avaliarPedido(e, p, AGORA), { ok: true, situacao: "confirmada" });
+  assert.equal(avaliarPedido(e, { ...p, hora: "07:30" }, AGORA).motivo, MENSAGENS.ocupado);
+  e.reservas.push({ ...p, alunoId: "x", situacao: "confirmada" });
+  assert.equal(avaliarPedido(e, p, AGORA).motivo, MENSAGENS.ocupado);
+});
+
+test("avaliarCancelamento: 2 horas para confirmada, livre para espera e admin", () => {
+  const r = res("a", "danca", "2026-11-12", "confirmada");
+  assert.equal(avaliarCancelamento(r, new Date(2026, 10, 12, 17, 0)).ok, true);   // 2h antes
+  assert.equal(avaliarCancelamento(r, new Date(2026, 10, 12, 17, 1)).motivo, MENSAGENS.prazoCancelar);
+  assert.equal(avaliarCancelamento(r, new Date(2026, 10, 12, 18, 30), { admin: true }).ok, true);
+  assert.equal(avaliarCancelamento({ ...r, situacao: "espera" }, new Date(2026, 10, 12, 18, 30)).ok, true);
+});
+
+test("quemSobe: primeira da espera por ordem de chegada", () => {
+  const rs = [{ ...res("y", "danca", "2026-11-12", "espera"), id: "2", criadaEm: "2026-11-10T09:00:00" },
+              { ...res("x", "danca", "2026-11-12", "espera"), id: "1", criadaEm: "2026-11-10T08:00:00" }];
+  assert.equal(quemSobe(rs, "danca", "2026-11-12").id, "1");
+  assert.equal(quemSobe([], "danca", "2026-11-12"), null);
+});
+
+test("horariosLivres: passos da duração, sem ocupados", () => {
+  const e = estadoTeste();
+  const q = { profissionalId: "rafael", servicoId: "personal", data: "2026-11-12" };
+  assert.deepEqual(horariosLivres(e, q, AGORA), ["06:00", "07:00", "08:00", "09:00"]);
+  e.reservas.push({ alunoId: "x", tipo: "individual", profissionalId: "rafael", servicoId: "personal",
+                    data: "2026-11-12", hora: "07:00", situacao: "confirmada" });
+  assert.deepEqual(horariosLivres(e, q, AGORA), ["06:00", "08:00", "09:00"]);
+  assert.deepEqual(horariosLivres(e, { ...q, data: "2026-11-19" }, AGORA), []);
+  assert.deepEqual(horariosLivres(e, q, new Date(2026, 10, 12, 7, 30)), ["08:00", "09:00"]);
+});
+
+test("avaliarVagas: não deixa ficar abaixo dos confirmados", () => {
+  const e = estadoTeste();
+  e.reservas.push(res("x", "danca", "2026-11-12", "confirmada"), res("y", "danca", "2026-11-12", "confirmada"));
+  assert.equal(avaliarVagas(e, "danca", 1, AGORA).motivo,
+    "Esta aula tem 2 alunos confirmados no dia 12/11/2026. Use pelo menos 2 vagas.");
+  assert.equal(avaliarVagas(e, "danca", 2, AGORA).ok, true);
+});
+
+test("duracaoDaReserva: aula excluída usa 60 minutos", () => {
+  assert.equal(duracaoDaReserva(res("a", "sumiu", "2026-11-12", "confirmada"), estadoTeste()), 60);
 });

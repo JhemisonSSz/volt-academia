@@ -166,6 +166,7 @@ main:focus { outline: none; }
 .item-agenda--passou { opacity: 0.55; }
 .item-agenda__hora { font-weight: 700; color: var(--destaque); }
 .item-agenda__titulo { font-weight: 600; }
+.pagador { flex: 1; font-weight: 600; }
 .participante { align-items: center; flex-wrap: wrap; }
 .participante > :first-child { flex: 1; min-width: 120px; font-weight: 600; }
 .chip { display: inline-block; margin: 0; padding: 2px var(--e3); font-size: 0.8rem; font-weight: 600; color: var(--destaque); background: var(--azul-fundo); border-radius: var(--raio-total); }

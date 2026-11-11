@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { criarDados } from "../public/js/dados.js";
 import { criarAcoes } from "../public/js/acoes.js";
 import { MENSAGENS, contagem, statusMensalidade } from "../public/js/regras.js";
+import { criarNovoId } from "../public/js/id.js";
 
 const AGORA = new Date(2026, 10, 11, 10, 0); // quarta-feira, 11/11/2026, 10h
 const HOJE = "2026-11-11";
@@ -176,4 +177,74 @@ test("excluirDisponibilidade remove só aquele horário de atendimento", async (
   const antes = d.ler().disponibilidade.length;
   assert.equal((await a.excluirDisponibilidade("disp-rafael-1")).ok, true);
   assert.equal(d.ler().disponibilidade.length, antes - 1);
+});
+
+// ---- Achados da revisão final ----
+
+test("excluir um aluno confirmado promove quem estava na espera", async () => {
+  const { d, a } = novo();
+  await a.excluirAluno("aluno-1004"); // confirmado na Dança lotada
+  const espera = d.ler().reservas.find((r) => r.alunoId === "aluno-1012" && r.aulaId === "danca-qui-1900");
+  assert.equal(espera.situacao, "confirmada");
+});
+
+test("aumentar as vagas de uma aula promove a lista de espera", async () => {
+  const { d, a } = novo();
+  const danca = d.ler().aulas.find((x) => x.id === "danca-qui-1900");
+  assert.equal((await a.salvarAula({ ...danca, vagas: 10 })).ok, true);
+  assert.equal(d.ler().reservas.find((r) => r.alunoId === "aluno-1012" && r.aulaId === "danca-qui-1900").situacao, "confirmada");
+});
+
+test("quem entra na espera depois fica atrás de quem já estava, mesmo de madrugada", async () => {
+  const cedo = new Date(2026, 10, 11, 5, 0);
+  const arm = new Map();
+  const armazenamento = { getItem: (k) => arm.get(k) ?? null, setItem: (k, v) => void arm.set(k, String(v)), removeItem: (k) => void arm.delete(k) };
+  const d = criarDados({ armazenamento, agora: () => cedo });
+  const a = criarAcoes(d, () => cedo);
+  const entrou = await a.reservar({ alunoId: "ana", tipo: "aula", aulaId: "danca-qui-1900", data: "2026-11-12" });
+  assert.equal(entrou.situacao, "espera");
+  const conf = d.ler().reservas.find((r) => r.aulaId === "danca-qui-1900" && r.situacao === "confirmada");
+  const r = await a.cancelar(conf.id, { admin: true });
+  assert.equal(r.promovida.alunoId, "aluno-1012"); // o da semente estava na frente da Ana
+});
+
+test("salvarAula: mudar dia ou horário com reservas futuras é recusado", async () => {
+  const { d, a } = novo();
+  const danca = d.ler().aulas.find((x) => x.id === "danca-qui-1900");
+  const r = await a.salvarAula({ ...danca, hora: "20:00" });
+  assert.equal(r.ok, false);
+  assert.match(r.motivo, /reservas futuras/);
+  assert.equal(d.ler().aulas.find((x) => x.id === "danca-qui-1900").hora, "19:00");
+});
+
+test("salvarAula: editar para o mesmo nome, dia e horário de outra aula é recusado", async () => {
+  const { a } = novo();
+  const base = { nome: "Yoga", profissionalId: "diego", diaSemana: 0, duracao: 50, vagas: 10 };
+  assert.equal((await a.salvarAula({ ...base, hora: "08:00" })).ok, true);
+  assert.equal((await a.salvarAula({ ...base, hora: "09:00" })).ok, true);
+  const segunda = await a.salvarAula({ ...base, id: "yoga-dom-0900", hora: "08:00" }); // edita a das 09:00 para 08:00
+  assert.match(segunda.motivo, /Já existe/);
+});
+
+test("salvarAula: horário em branco ou professor inexistente é recusado", async () => {
+  const { a } = novo();
+  const base = { nome: "Yoga", profissionalId: "diego", diaSemana: 0, hora: "08:00", duracao: 50, vagas: 10 };
+  assert.equal((await a.salvarAula({ ...base, hora: "" })).ok, false);
+  assert.equal((await a.salvarAula({ ...base, hora: "25:99" })).ok, false);
+  assert.equal((await a.salvarAula({ ...base, profissionalId: "ninguem" })).ok, false);
+});
+
+test("salvarAluno: vencimento em branco ou plano inexistente é recusado", async () => {
+  const { a } = novo();
+  const base = { nome: "Teste", whatsapp: "73900000098", planoId: "mensal", vencimento: HOJE };
+  assert.equal((await a.salvarAluno({ ...base, vencimento: "" })).ok, false);
+  assert.equal((await a.salvarAluno({ ...base, vencimento: "2026-02-31" })).ok, false);
+  assert.equal((await a.salvarAluno({ ...base, planoId: "nao-existe" })).ok, false);
+});
+
+test("criarNovoId funciona mesmo sem crypto.randomUUID (endereço http de rede local)", () => {
+  const semUuid = criarNovoId({ getRandomValues: (v) => v.fill(7) });
+  const semCrypto = criarNovoId(undefined);
+  assert.ok(semUuid().length >= 8);
+  assert.notEqual(semCrypto(), semCrypto());
 });

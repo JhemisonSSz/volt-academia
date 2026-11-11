@@ -2,9 +2,12 @@
 // O resto do site só chama as funções daqui. Se um dia entrar o Firebase,
 // é este arquivo que se reescreve (mantendo os mesmos nomes de função).
 import { criarSemente } from "./semente.js";
+import { dataISO } from "./formato.js";
+import { novoId } from "./id.js";
 
 const CHAVE = "volt-academia:v1";
 const VERSAO = 1;
+const COLECOES = ["planos", "alunos", "pagamentos", "profissionais", "aulas", "servicos", "disponibilidade", "reservas"];
 
 // localStorage se funcionar; senão guarda só na memória (aba anônima, bloqueio de cookies...)
 export function armazenamentoSeguro() {
@@ -32,7 +35,10 @@ export function criarDados({ armazenamento, agora = () => new Date(), janela = g
       const bruto = armazenamento.getItem(CHAVE);
       if (bruto) {
         const salvo = JSON.parse(bruto);
-        if (salvo && salvo.versao === VERSAO && Array.isArray(salvo.alunos) && Array.isArray(salvo.reservas)) return salvo;
+        // Dados de demonstração de outro dia são refeitos: as datas (vencimentos, aulas) são relativas a "hoje"
+        const completo = salvo && salvo.versao === VERSAO && salvo.config && typeof salvo.config === "object"
+          && COLECOES.every((c) => Array.isArray(salvo[c]));
+        if (completo && salvo.sementeEm === dataISO(agora())) return salvo;
       }
     } catch {
       // JSON inválido ou acesso bloqueado: cai na semente
@@ -84,7 +90,7 @@ export function criarDados({ armazenamento, agora = () => new Date(), janela = g
     },
 
     async salvar(colecao, registro) {
-      const completo = registro.id ? registro : { ...registro, id: globalThis.crypto.randomUUID() };
+      const completo = registro.id ? registro : { ...registro, id: novoId() };
       await this.aplicar([{ colecao, salvar: completo }]);
       return completo;
     },

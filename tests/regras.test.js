@@ -155,3 +155,9 @@ test("segundaDaSemana: domingo volta para a segunda anterior", () => {
   assert.equal(segundaDaSemana("2026-11-09"), "2026-11-09"); // a própria segunda
   assert.equal(segundaDaSemana("2026-11-15"), "2026-11-09"); // domingo
 });
+
+test("statusMensalidade: vencimento em branco ou inválido conta como em atraso", () => {
+  assert.equal(statusMensalidade("", HOJE), "em-atraso");
+  assert.equal(statusMensalidade(undefined, HOJE), "em-atraso");
+  assert.equal(statusMensalidade("lixo", HOJE), "em-atraso");
+});

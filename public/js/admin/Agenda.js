@@ -1,4 +1,4 @@
-// Agenda.js — A semana inteira (segunda a domingo): aulas e atendimentos individuais.
+// Agenda.js — Os próximos 7 dias (hoje + 6): aulas e atendimentos individuais.
 // Ao clicar num item, aparece quem reservou e dá para cancelar (admin cancela a qualquer hora).
 import { html, useState } from "../react.js";
 import { Botao, BarraVagas } from "../componentes/basicos.js";
@@ -6,15 +6,15 @@ import { Modal, confirmar } from "../componentes/modal.js";
 import { usarAvisos } from "../componentes/avisos.js";
 import { acoes } from "../componentes/usarEstado.js";
 import { dataISO } from "../formato.js";
-import { contagem, ocorrencias, segundaDaSemana, somarDias, inicio } from "../regras.js";
+import { contagem, ocorrencias, somarDias, inicio } from "../regras.js";
 import { NOMES_DIAS, ROTULO_SITUACAO, rotuloDia } from "../descricao.js";
 
 export function Agenda({ estado }) {
   const { avisar } = usarAvisos();
   const [aberto, setAberto] = useState(null); // item escolhido: { chave, titulo, data, hora }
   const agora = new Date();
-  const segunda = segundaDaSemana(dataISO(agora));
-  const dias = Array.from({ length: 7 }, (_, i) => somarDias(segunda, i));
+  // Hoje + 6 dias: a mesma janela em que o aluno consegue reservar
+  const dias = Array.from({ length: 7 }, (_, i) => somarDias(dataISO(agora), i));
 
   const nomeAluno = (id) => estado.alunos.find((a) => a.id === id)?.nome ?? "Aluno removido";
   const ativas = estado.reservas.filter((r) => r.situacao !== "cancelada");
@@ -51,7 +51,7 @@ export function Agenda({ estado }) {
   }
 
   return html`<div className="pagina-admin">
-    <h1>Agenda da semana</h1>
+    <h1>Agenda dos próximos 7 dias</h1>
     <div className="semana">
       ${dias.map((data) => {
         const itens = itensDoDia(data);

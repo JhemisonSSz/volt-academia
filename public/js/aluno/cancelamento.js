@@ -12,6 +12,11 @@ export async function cancelarComConfirmacao(reserva, estado, avisar) {
     botao: espera ? "Sair da espera" : "Cancelar reserva",
   });
   if (!quer) return;
-  const resultado = await acoes.cancelar(reserva.id);
+  let resultado;
+  try {
+    resultado = await acoes.cancelar(reserva.id);
+  } catch {
+    resultado = { ok: false, motivo: "Algo deu errado. Tente de novo." };
+  }
   avisar(resultado.ok ? (espera ? "Você saiu da lista de espera." : "Reserva cancelada.") : resultado.motivo, resultado.ok ? "ok" : "erro");
 }

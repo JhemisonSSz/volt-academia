@@ -62,7 +62,7 @@ export function diasParaVencer(vencimento, hoje) {
 
 export function statusMensalidade(vencimento, hoje) {
   const dias = diasParaVencer(vencimento, hoje);
-  if (dias < 0) return "em-atraso";
+  if (!Number.isFinite(dias) || dias < 0) return "em-atraso"; // sem data válida, não deixa reservar
   if (dias <= 5) return "vence-em-breve";
   return "em-dia";
 }
@@ -184,6 +184,27 @@ export function avaliarPedido(estado, pedido, agora) {
   }
   const { confirmadas } = contagem(estado.reservas ?? [], aula.id, pedido.data);
   return { ok: true, situacao: confirmadas < aula.vagas ? "confirmada" : "espera" };
+}
+
+// Sobe da lista de espera enquanto sobrar vaga, na ordem de chegada. Só olha aulas que ainda vão acontecer.
+// Devolve as reservas já com situacao "confirmada" (quem chama é que grava).
+export function promocoes(reservas, aula, agora) {
+  const datas = [...new Set(reservas
+    .filter((r) => r.aulaId === aula.id && r.situacao === "espera" && inicio(r.data, r.hora) > agora)
+    .map((r) => r.data))];
+  const promovidas = [];
+  for (const data of datas) {
+    let { confirmadas } = contagem(reservas, aula.id, data);
+    const fila = reservas
+      .filter((r) => r.aulaId === aula.id && r.data === data && r.situacao === "espera")
+      .sort((a, b) => String(a.criadaEm).localeCompare(String(b.criadaEm)));
+    for (const r of fila) {
+      if (confirmadas >= aula.vagas) break;
+      promovidas.push({ ...r, situacao: "confirmada" });
+      confirmadas++;
+    }
+  }
+  return promovidas;
 }
 
 // Aluno: confirmada só até 2 horas antes; espera pode sair até a aula começar.

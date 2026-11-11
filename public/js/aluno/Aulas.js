@@ -26,8 +26,14 @@ export function Aulas({ estado, aluno }) {
 
   async function reservar(aulaId) {
     setOcupadas((o) => ({ ...o, [aulaId]: true }));
-    const r = await acoes.reservar({ alunoId: aluno.id, tipo: "aula", aulaId, data });
-    setOcupadas((o) => ({ ...o, [aulaId]: false }));
+    let r;
+    try {
+      r = await acoes.reservar({ alunoId: aluno.id, tipo: "aula", aulaId, data });
+    } catch {
+      r = { ok: false, motivo: "Algo deu errado. Tente de novo." };
+    } finally {
+      setOcupadas((o) => ({ ...o, [aulaId]: false }));
+    }
     if (!r.ok) return avisar(r.motivo, "erro");
     const aula = estado.aulas.find((a) => a.id === aulaId);
     avisar(r.situacao === "espera"

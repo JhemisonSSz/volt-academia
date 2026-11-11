@@ -36,8 +36,14 @@ export function Individual({ estado, aluno }) {
 
   async function confirmar() {
     setEnviando(true);
-    const r = await acoes.reservar({ alunoId: aluno.id, tipo: "individual", servicoId, profissionalId, data, hora: horaEscolhida });
-    setEnviando(false);
+    let r;
+    try {
+      r = await acoes.reservar({ alunoId: aluno.id, tipo: "individual", servicoId, profissionalId, data, hora: horaEscolhida });
+    } catch {
+      r = { ok: false, motivo: "Algo deu errado. Tente de novo." };
+    } finally {
+      setEnviando(false);
+    }
     setHoraEscolhida(null);
     avisar(r.ok ? `Reserva confirmada: ${servico.nome}, ${rotuloDia(data)} às ${horaEscolhida}.` : r.motivo, r.ok ? "ok" : "erro");
   }

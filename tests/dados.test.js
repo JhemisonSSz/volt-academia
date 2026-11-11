@@ -83,3 +83,19 @@ test("restaurarDemo apaga mudanças", async () => {
   await d.restaurarDemo();
   assert.ok(d.ler().alunos.some((a) => a.id === "ana"));
 });
+
+test("dados de demonstração de outro dia são renovados; do mesmo dia são mantidos", async () => {
+  const arm = falso();
+  const d1 = criarDados({ armazenamento: arm, agora: () => AGORA });
+  await d1.remover("alunos", "ana");
+  const mesmoDia = criarDados({ armazenamento: arm, agora: () => new Date(2026, 10, 11, 18, 0) });
+  assert.ok(!mesmoDia.ler().alunos.some((a) => a.id === "ana"));
+  const diaSeguinte = criarDados({ armazenamento: arm, agora: () => new Date(2026, 10, 12, 9, 0) });
+  assert.ok(diaSeguinte.ler().alunos.some((a) => a.id === "ana"));
+  assert.equal(diaSeguinte.ler().alunos.find((a) => a.id === "carla").vencimento, "2026-11-05"); // hoje-7 de novo
+});
+
+test("semente: nenhum pagamento tem data no futuro", () => {
+  const e = criarSemente(AGORA);
+  assert.ok(e.pagamentos.every((p) => p.data <= HOJE), e.pagamentos.filter((p) => p.data > HOJE).map((p) => p.nomeAluno).join(", "));
+});

@@ -68,14 +68,14 @@ export function criarSemente(agora) {
   ];
   const pagamentos = alunos.map((a, i) => {
     const plano = planos.find((p) => p.id === a.planoId);
-    return { id: `pag-${i + 1}`, alunoId: a.id, nomeAluno: a.nome, data: somarMeses(a.vencimento, -plano.meses), valor: plano.valor, planoId: plano.id };
+    return { id: `pag-${i + 1}`, alunoId: a.id, nomeAluno: a.nome, data: [somarMeses(a.vencimento, -plano.meses), hoje].sort()[0] /* nunca no futuro */, valor: plano.valor, planoId: plano.id };
   });
 
   const aulas = montarAulas();
   const reservas = [];
   const reservar = (alunoId, aula, data, situacao, criada) => reservas.push({
     id: `res-${reservas.length + 1}`, alunoId, tipo: "aula", aulaId: aula.id, data, hora: aula.hora,
-    situacao, criadaEm: `${hoje}T${criada}`,
+    situacao, criadaEm: inicio(somarDias(hoje, -1), criada.slice(0, 5)).toISOString(), // ontem: reservas novas ficam depois
   });
 
   // Ana: Spinning das 07:00 nos últimos 21 dias (os treinos do cartão de energia) + 1 reserva futura
@@ -106,6 +106,7 @@ export function criarSemente(agora) {
 
   return {
     versao: 1,
+    sementeEm: hoje, // dia em que estes dados de demonstração foram gerados
     config: { aulasLigadas: true, individualLigado: true },
     planos, alunos, pagamentos, profissionais, aulas, servicos, disponibilidade, reservas,
   };

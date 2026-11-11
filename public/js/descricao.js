@@ -40,3 +40,8 @@ export function proximasReservas(estado, alunoId, agora) {
     .filter((r) => r.alunoId === alunoId && r.situacao !== "cancelada" && inicio(r.data, r.hora) > agora)
     .sort((a, b) => (a.data + a.hora).localeCompare(b.data + b.hora));
 }
+
+// Quem pagou: o aluno, ou "Aluno removido" se ele já foi excluído (o pagamento continua no histórico)
+export function nomeDoPagador(estado, pagamento) {
+  return estado.alunos.find((a) => a.id === pagamento.alunoId)?.nome ?? "Aluno removido";
+}

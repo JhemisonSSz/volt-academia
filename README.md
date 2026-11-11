@@ -26,7 +26,7 @@ tudo funciona direto no navegador, sem servidor e sem banco de dados (os dados f
 | 1002 | Bruno | vence em 3 dias |
 | 1003 | Carla | em atraso (não consegue reservar) |
 
-As datas se ajustam sozinhas a "hoje". Para voltar aos dados de exemplo:
+As datas se ajustam sozinhas a "hoje", e os dados de exemplo são refeitos a cada novo dia (o que você mudar vale só até o dia seguinte). Para voltar aos dados de exemplo na hora:
 painel → **Configurações** → *Restaurar dados de demonstração*.
 
 ## Como rodar

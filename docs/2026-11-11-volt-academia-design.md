@@ -121,7 +121,7 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 - Entrada: botão "Entrar como admin (demo)".
 - **Resumo:** reservas de hoje, ocupação da semana, alunos em atraso, receita do mês.
 - **Alunos:** busca, filtro por status, ficha (plano, vencimento, Registrar pagamento, histórico), criar e editar.
-- **Agenda:** grade da semana (aulas + individuais) e lista de quem reservou.
+- **Agenda:** grade dos próximos 7 dias (aulas + individuais) e lista de quem reservou.
 - **Aulas:** criar, editar e excluir.
 - **Individual:** profissionais, serviços e disponibilidade.
 - **Planos:** criar e editar.
@@ -150,6 +150,10 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 16. Excluir um aluno apaga as reservas dele e **mantém os pagamentos**, que aparecem no histórico e na receita como "Aluno removido".
 17. Duas abas abertas (aluno e painel) se atualizam sozinhas pelo evento `storage` do navegador.
 18. A receita do mês é a soma dos pagamentos com `data` no mês atual.
+19. A lista de espera sobe **sempre que sobrar vaga**: ao cancelar, ao excluir um aluno confirmado e ao aumentar as vagas da aula (revisão final).
+20. Mudar o dia ou o horário de uma aula que tem reservas futuras é recusado ("exclua a aula e crie outra"). Salvar aula/aluno exige horário, vencimento, professor e plano válidos; vencimento inválido conta como em atraso.
+21. Os dados de demonstração são refeitos a cada novo dia (a semente guarda `sementeEm`), para vencimentos e aulas nunca ficarem velhos. Mudanças feitas no navegador valem só até o dia seguinte ou até "Restaurar".
+22. O painel mostra os **próximos 7 dias** (hoje + 6), a mesma janela em que o aluno reserva. O Resumo lista os pagamentos do mês, com "Aluno removido" quando o aluno foi excluído.
 
 ## 7b. Dados de demonstração (decididos no grilling)
 

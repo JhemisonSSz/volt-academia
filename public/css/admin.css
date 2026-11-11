@@ -36,6 +36,7 @@
 .entrada__rodape { margin: var(--e6) 0 0; font-size: 0.85rem; color: var(--texto-suave); }
 .entrada__form { margin-bottom: var(--e4); }
 .entrada__form .botao { width: 100%; margin-top: var(--e2); }
+.carregando-login { align-self: center; justify-self: center; margin: 0; }
 .entrada__aviso { margin: 0; font-size: 0.9rem; color: var(--texto); }
 .entrada__credito { margin: var(--e1) 0 0; font-size: 0.75rem; color: var(--texto-suave); }
 

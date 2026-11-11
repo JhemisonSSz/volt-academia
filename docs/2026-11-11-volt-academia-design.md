@@ -118,7 +118,7 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 **Navegação:** barra inferior (Início, Aulas, Individual, Reservas) no celular e menu no topo no computador. A Mensalidade fica acessível pelo cartão do Início e pelo menu do usuário. Uma aba desligada no painel some da navegação.
 
 ### Painel admin (`admin.html`)
-- Entrada: **usuário e senha** (regra 26; antes era um botão de demonstração sem senha).
+- Entrada: **e-mail e senha** do Firebase (regra 26).
 - **Resumo:** reservas de hoje, ocupação da semana, alunos em atraso, receita do mês.
 - **Alunos:** busca, filtro por status, ficha (plano, vencimento, Registrar pagamento, histórico), criar e editar.
 - **Agenda:** grade dos próximos 7 dias (aulas + individuais) e lista de quem reservou.
@@ -156,7 +156,7 @@ A Ana tem treinos passados nas últimas semanas, para o cartão de energia apare
 23. **Criar matrícula pelo site:** na entrada, logo abaixo de "Entrar", o botão "Criar minha matrícula" pede nome, WhatsApp e plano. A matrícula é a próxima livre e o aluno nasce com a **primeira mensalidade pendente** (vencimento = ontem, sem pagamento): fica em atraso e só reserva depois de pagar.
 24. **Pagamento pelo site (simulado):** a tela de matrícula criada, a página Mensalidade e a faixa de atraso oferecem Pix (QR e "copia e cola" fictícios) e cartão de crédito. Nada é cobrado e nenhum dado de cartão é pedido. Pagar usa a mesma regra do painel (novo vencimento = hoje + meses do plano) e grava a `forma` (pix, cartao ou recepcao), mostrada no Resumo do painel.
 25. **Foto na entrada do aluno e na do painel:** uma foto de academia (Pexels, Airam Dato-on, licença livre) aparece no topo no celular, com fade para o fundo escuro, e em tela cheia no computador (a partir de 900px), com uma camada escura do lado do texto para manter o contraste. Duas versões (800 e 1600 px) via `srcset`; a foto surge com fade ao carregar. O crédito fica no rodapé da tela e no README.
-26. **Login do painel (decisão de 2026-11-11):** o painel pede usuário e senha, para que só quem pedir o acesso (e demonstrar interesse) o veja. É uma porta de fachada em JavaScript, sem segurança de verdade, já que não há dado real nem servidor. A senha nunca fica no projeto: `npm run senha` grava só um resumo SHA-256 com sal e 10 mil repetições em `public/js/acesso-config.js`. Mensagem única para erro de usuário ou de senha. Sem senha configurada, ninguém entra.
+26. **Login do painel (decisão de 2026-11-11):** o painel pede **e-mail e senha do Firebase Authentication**, igual aos outros projetos, para que só quem pedir o acesso (e demonstrar interesse) o veja. Só entra quem está em `EMAILS_ADMIN`; usuário que existe no Firebase mas não está na lista é desconectado na hora. Erro de e-mail e de senha dão a mesma mensagem. O login fica em `auth.js` (CDN do Google, sem build) e vale entre visitas até clicar em Sair. Os dados do painel continuam no navegador; o Firebase cuida só do login. Sem o `firebase-config.js` preenchido, ninguém entra. (Antes desta regra houve um login de fachada com senha em arquivo; foi trocado por este.)
 22. O painel mostra os **próximos 7 dias** (hoje + 6), a mesma janela em que o aluno reserva. O Resumo lista os pagamentos do mês, com "Aluno removido" quando o aluno foi excluído.
 
 ## 7b. Dados de demonstração (decididos no grilling)

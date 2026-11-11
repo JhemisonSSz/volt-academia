@@ -18,7 +18,7 @@ tudo funciona direto no navegador, sem servidor e sem banco de dados (os dados f
 **Painel** (`admin.html`)
 - Resumo do dia, alunos (busca, filtro, ficha, **registro de pagamento**), agenda da semana,
   aulas, atendimento individual, planos e configurações.
-- **Pede usuário e senha** (veja "Acesso ao painel" abaixo). Quem quer conhecer o painel pede o acesso.
+- **Pede e-mail e senha** (login do Firebase, como nos outros projetos; veja "Acesso ao painel" abaixo). Quem quer conhecer o painel pede o acesso.
 
 ## Alunos de demonstração
 
@@ -33,20 +33,21 @@ painel → **Configurações** → *Restaurar dados de demonstração*.
 
 ## Acesso ao painel
 
-O painel pede usuário e senha. A senha **não fica no projeto**: você define uma vez, no seu computador, e só o
-"resumo criptografado" dela é gravado em `public/js/acesso-config.js`.
+O painel usa o **login do Firebase (e-mail e senha)**, no mesmo padrão dos outros projetos. A senha fica guardada
+no Firebase, nunca no projeto. Configuração, uma vez só:
 
-```bash
-npm run senha
-```
+1. **App Web:** console do Firebase → projeto `volt-academia` → ⚙️ Configurações do projeto → *Seus apps* → ícone `</>`
+   (Web) → registrar o app. Copie a configuração para `public/js/firebase-config.js` (esses valores não são senha).
+2. **Ativar o login:** *Authentication* → Começar → *Método de login* → **E-mail/senha** → ativar.
+3. **Criar o administrador:** *Authentication* → *Usuários* → Adicionar usuário, com o e-mail que está em
+   `EMAILS_ADMIN` (em `firebase-config.js`, padrão `admin@volt-academia.teste`) e a senha que você escolher.
+4. **Fechar o cadastro:** *Authentication* → *Configurações* → *Ações do usuário* → desmarque "Ativar criação (cadastro)",
+   para ninguém criar conta por fora. (Mesmo sem isso, só os e-mails de `EMAILS_ADMIN` abrem o painel.)
+5. Publique de novo: `firebase deploy --project volt-academia --only hosting`.
 
-O comando pergunta o usuário (padrão: `admin`) e a senha (mínimo 8 caracteres, não aparece enquanto você digita).
-Depois é só publicar de novo. Para trocar a senha, rode o comando outra vez. Enquanto nenhuma senha for definida,
-ninguém entra no painel (aparece "O acesso ao painel ainda não foi configurado.").
+Enquanto o `firebase-config.js` estiver com "COLE_AQUI", ninguém entra e a tela avisa que o login não está configurado.
 
-> **Importante:** como o site é só de arquivos estáticos, esse login é uma *porta de fachada*: barra o acesso casual,
-> mas quem ler o código consegue contornar. Não há nenhum dado real a proteger (tudo fica no navegador de cada
-> visitante). Para proteção de verdade, o caminho é o Firebase Authentication (veja o COMO-FUNCIONA.md).
+> Os dados do painel (alunos, aulas, reservas) continuam no navegador de cada visitante; o Firebase cuida só do login.
 
 ## Como rodar
 

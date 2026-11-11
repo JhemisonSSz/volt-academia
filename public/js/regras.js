@@ -48,7 +48,7 @@ export function somarMeses(data, n) {
 const diferencaDias = (de, ate) => Math.round((paraData(ate) - paraData(de)) / DIA_MS);
 
 // Segunda-feira da semana da data
-function segundaDaSemana(data) {
+export function segundaDaSemana(data) {
   const d = paraData(data);
   const recuo = (d.getDay() + 6) % 7; // segunda = 0 ... domingo = 6
   return somarDias(data, -recuo);

@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   MENSAGENS, somarMeses, statusMensalidade, diasParaVencer, novoVencimento, resumoEnergia, receitaDoMes,
-  ocorrencias, avaliarPedido, avaliarCancelamento, quemSobe, horariosLivres, avaliarVagas, duracaoDaReserva,
+  ocorrencias, avaliarPedido, avaliarCancelamento, quemSobe, horariosLivres, avaliarVagas, duracaoDaReserva, segundaDaSemana,
 } from "../public/js/regras.js";
 
 const AGORA = new Date(2026, 10, 11, 10, 0); // quarta-feira, 11/11/2026, 10h
@@ -148,4 +148,10 @@ test("avaliarVagas: não deixa ficar abaixo dos confirmados", () => {
 
 test("duracaoDaReserva: aula excluída usa 60 minutos", () => {
   assert.equal(duracaoDaReserva(res("a", "sumiu", "2026-11-12", "confirmada"), estadoTeste()), 60);
+});
+
+test("segundaDaSemana: domingo volta para a segunda anterior", () => {
+  assert.equal(segundaDaSemana("2026-11-11"), "2026-11-09"); // quarta
+  assert.equal(segundaDaSemana("2026-11-09"), "2026-11-09"); // a própria segunda
+  assert.equal(segundaDaSemana("2026-11-15"), "2026-11-09"); // domingo
 });

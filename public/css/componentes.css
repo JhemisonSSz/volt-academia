@@ -175,3 +175,25 @@
 .link-seta { display: inline-block; margin-top: var(--e2); font-weight: 600; text-decoration: none; }
 .link-seta::after { content: " →"; }
 .link-seta:hover { text-decoration: underline; }
+
+/* ---- Logo ---- */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  margin: 0 0 var(--e4);
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--texto);
+  text-decoration: none;
+}
+.logo__raio {
+  display: inline-grid;
+  place-items: center;
+  color: var(--destaque);
+  filter: drop-shadow(0 0 8px var(--brilho));
+}
+.logo__leve { font-weight: 600; letter-spacing: 0.04em; color: var(--texto-suave); }
+.logo--pequeno { margin: 0; font-size: 1.3rem; }

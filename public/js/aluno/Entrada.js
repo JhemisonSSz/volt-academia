@@ -1,8 +1,9 @@
 // Entrada.js — Primeira tela: matrícula e botões de demonstração.
 import { html, useState } from "../react.js";
 import { Botao, Campo } from "../componentes/basicos.js";
-import { acoes } from "../componentes/usarEstado.js";
-import { MENSAGENS } from "../regras.js";
+import { acoes, usarEstado } from "../componentes/usarEstado.js";
+import { MENSAGENS, valorPorMes, planoMaisEconomico } from "../regras.js";
+import { moeda } from "../formato.js";
 import { Raio, Pin, Telefone, Mensagem, Instagram, Relogio } from "../icones.js";
 import { CONTATO, linkTelefone, linkWhatsApp } from "../contato.js";
 import { CriarMatricula } from "./CriarMatricula.js";
@@ -17,7 +18,10 @@ export function Entrada({ aoEntrar }) {
   const [matricula, setMatricula] = useState("");
   const [erro, setErro] = useState("");
   const [ocupado, setOcupado] = useState(false);
+  const estado = usarEstado();
   const [criando, setCriando] = useState(false);
+  const planos = [...estado.planos].sort((a, b) => a.meses - b.meses);
+  const maisEconomico = planoMaisEconomico(planos);
   const [fotoPronta, setFotoPronta] = useState(false); // a foto aparece suavemente depois de carregar
 
   async function tentar(valor) {
@@ -54,6 +58,18 @@ export function Entrada({ aoEntrar }) {
           ${DEMOS.map((d) => html`<${Botao} key=${d.matricula} variante="secundario" onClick=${() => tentar(d.matricula)}>${d.texto}<//>`)}
         </div>
       </div>`}
+      ${criando || planos.length === 0 ? null : html`<section className="entrada__planos" aria-labelledby="titulo-planos">
+        <h2 id="titulo-planos">Planos</h2>
+        <ul className="planos">
+          ${planos.map((p) => html`<li key=${p.id} className=${`plano ${p.id === maisEconomico ? "plano--destaque" : ""}`}>
+            <span className="plano__nome">${p.nome}</span>
+            <span className="plano__preco numeros">${moeda(p.valor)}</span>
+            <span className="plano__mes numeros">${p.meses > 1 ? `${moeda(valorPorMes(p))} por mês` : "por mês"}</span>
+            ${p.id === maisEconomico ? html`<span className="plano__selo">Menor preço por mês</span>` : null}
+          </li>`)}
+        </ul>
+        <${Botao} variante="secundario" onClick=${() => { setCriando(true); window.scrollTo({ top: 0 }); }}>Quero me matricular<//>
+      </section>`}
       <p className="entrada__rodape"><a href="admin.html">Painel da academia</a> · Projeto de demonstração</p>
       <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>
     </div>

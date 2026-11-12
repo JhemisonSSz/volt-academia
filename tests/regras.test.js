@@ -4,7 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   MENSAGENS, somarMeses, statusMensalidade, diasParaVencer, novoVencimento, resumoEnergia, receitaDoMes,
-  ocorrencias, avaliarPedido, avaliarCancelamento, quemSobe, horariosLivres, avaliarVagas, duracaoDaReserva, segundaDaSemana,
+  ocorrencias, avaliarPedido, avaliarCancelamento, quemSobe, horariosLivres, avaliarVagas, duracaoDaReserva, segundaDaSemana, valorPorMes, planoMaisEconomico,
 } from "../public/js/regras.js";
 
 const AGORA = new Date(2026, 10, 11, 10, 0); // quarta-feira, 11/11/2026, 10h
@@ -160,4 +160,23 @@ test("statusMensalidade: vencimento em branco ou inválido conta como em atraso"
   assert.equal(statusMensalidade("", HOJE), "em-atraso");
   assert.equal(statusMensalidade(undefined, HOJE), "em-atraso");
   assert.equal(statusMensalidade("lixo", HOJE), "em-atraso");
+});
+
+test("valorPorMes: preço do plano dividido pelos meses, em centavos", () => {
+  assert.equal(valorPorMes({ valor: 80, meses: 1 }), 80);
+  assert.equal(valorPorMes({ valor: 220, meses: 3 }), 73.33);
+  assert.equal(valorPorMes({ valor: 420, meses: 6 }), 70);
+  assert.equal(valorPorMes({ valor: 100, meses: 0 }), 100); // plano com meses inválidos não quebra
+});
+
+test("planoMaisEconomico: o de menor valor por mês (empate fica com o primeiro)", () => {
+  const planos = [
+    { id: "mensal", valor: 80, meses: 1 },
+    { id: "trimestral", valor: 220, meses: 3 },
+    { id: "semestral", valor: 420, meses: 6 },
+  ];
+  assert.equal(planoMaisEconomico(planos), "semestral");
+  assert.equal(planoMaisEconomico([{ id: "a", valor: 50, meses: 1 }, { id: "b", valor: 100, meses: 2 }]), "a");
+  assert.equal(planoMaisEconomico([{ id: "so", valor: 80, meses: 1 }]), null); // um plano só: nada a destacar
+  assert.equal(planoMaisEconomico([]), null);
 });

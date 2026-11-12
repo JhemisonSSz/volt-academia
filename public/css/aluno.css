@@ -289,3 +289,32 @@ main:focus { outline: none; }
 @media (min-width: 900px) {
   .entrada__contato { position: absolute; right: var(--e6); bottom: var(--e5); margin: 0; }
 }
+
+/* ---- Planos na entrada ---- */
+.entrada__planos { margin-top: var(--e5); padding-top: var(--e5); border-top: 1px solid var(--borda); }
+.entrada__planos h2 { margin: 0 0 var(--e3); font-size: 1.1rem; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 0.06em; }
+.planos { display: grid; gap: var(--e2); margin: 0 0 var(--e3); padding: 0; list-style: none; }
+.plano {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 var(--e3);
+  align-items: baseline;
+  align-content: start; /* o selo extra do plano destacado não empurra o preço para cima */
+  padding: var(--e3) var(--e4);
+  background: rgba(18, 26, 40, 0.9);
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-p);
+}
+.plano--destaque { border-color: var(--destaque); box-shadow: var(--brilho-sombra); }
+.plano__nome { font-family: var(--fonte-titulo); font-size: 1.3rem; font-weight: 700; }
+.plano__preco { font-family: var(--fonte-titulo); font-size: 1.5rem; font-weight: 700; text-align: right; }
+.plano__mes { grid-column: 1 / -1; font-size: 0.85rem; color: var(--texto-suave); }
+.plano__selo { grid-column: 1 / -1; margin-top: var(--e1); font-size: 0.75rem; font-weight: 600; color: var(--destaque); }
+.entrada__planos .botao { width: 100%; }
+
+@media (min-width: 900px) {
+  .planos { grid-template-columns: repeat(3, 1fr); }
+  .plano { grid-template-columns: 1fr; gap: var(--e1); text-align: left; }
+  .plano__preco { text-align: left; }
+  .planos:has(.plano:nth-child(4)) { grid-template-columns: repeat(2, 1fr); }
+}

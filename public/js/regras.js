@@ -268,3 +268,17 @@ export function avaliarVagas(estado, aulaId, novasVagas, agora) {
   const { confirmadas } = contagem(estado.reservas ?? [], aulaId, proxima.data);
   return Number(novasVagas) >= confirmadas ? { ok: true } : { ok: false, motivo: MENSAGENS.vagas(confirmadas, proxima.data) };
 }
+
+// ---- Planos ----
+
+// Quanto o plano custa por mês (220 em 3 meses = 73,33), arredondado para centavos
+export function valorPorMes(plano) {
+  const meses = Number(plano.meses) >= 1 ? Number(plano.meses) : 1;
+  return Math.round((Number(plano.valor) / meses) * 100) / 100;
+}
+
+// Id do plano de menor valor por mês, para destacar na tela. Com um plano só (ou nenhum), não há o que destacar.
+export function planoMaisEconomico(planos) {
+  if (!Array.isArray(planos) || planos.length < 2) return null;
+  return planos.reduce((melhor, p) => (valorPorMes(p) < valorPorMes(melhor) ? p : melhor)).id;
+}

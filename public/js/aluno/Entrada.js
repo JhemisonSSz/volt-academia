@@ -22,6 +22,7 @@ export function Entrada({ aoEntrar }) {
   const [criando, setCriando] = useState(false);
   const planos = [...estado.planos].sort((a, b) => a.meses - b.meses);
   const maisEconomico = planoMaisEconomico(planos);
+  const matricular = () => { setCriando(true); window.scrollTo({ top: 0 }); };
   const [fotoPronta, setFotoPronta] = useState(false); // a foto aparece suavemente depois de carregar
 
   async function tentar(valor) {
@@ -70,6 +71,7 @@ export function Entrada({ aoEntrar }) {
                 ${p.id === maisEconomico ? html`<span className="plano__selo">Menor preço por mês</span>` : null}
               </li>`)}
             </ul>
+            <${Botao} variante="secundario" className="botao--so-computador" onClick=${matricular}>Quero me matricular<//>
           </div>`}
           <div className="expediente-coluna">
             <h2 id="titulo-horarios"><${Relogio} tamanho=${16} /> Horários</h2>
@@ -78,7 +80,7 @@ export function Entrada({ aoEntrar }) {
             </ul>
           </div>
         </div>
-        ${planos.length === 0 ? null : html`<${Botao} variante="secundario" onClick=${() => { setCriando(true); window.scrollTo({ top: 0 }); }}>Quero me matricular<//>`}
+        ${planos.length === 0 ? null : html`<${Botao} variante="secundario" className="botao--so-celular" onClick=${matricular}>Quero me matricular<//>`}
       </section>`}
       <p className="entrada__rodape"><a href="admin.html">Painel da academia</a> · Projeto de demonstração</p>
       <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>

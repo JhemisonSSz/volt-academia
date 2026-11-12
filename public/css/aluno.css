@@ -309,6 +309,9 @@ main:focus { outline: none; }
 .plano__mes { grid-column: 1 / -1; font-size: 0.85rem; color: var(--texto-suave); }
 .plano__selo { grid-column: 1 / -1; margin-top: var(--e1); font-size: 0.75rem; font-weight: 600; color: var(--destaque); }
 .entrada__planos .botao { width: 100%; }
+.planos-coluna .botao { margin-top: var(--e2); }
+/* No computador o botão fica logo abaixo dos planos; no celular, no fim (depois dos horários) */
+.botao--so-computador { display: none; }
 
 /* Planos e horários lado a lado (coluna da esquerda); no celular, um embaixo do outro.
    Obs.: ".horarios" já é o nome da grade de horários da tela de reserva, por isso aqui é ".expediente". */
@@ -329,6 +332,8 @@ main:focus { outline: none; }
 
 @media (min-width: 900px) {
   .planos-horarios { grid-template-columns: minmax(0, 1fr) 190px; align-items: start; gap: var(--e3); }
+  .botao--so-computador { display: inline-flex; }
+  .botao--so-celular { display: none; }
   .expediente li { flex-direction: column; gap: 0; padding: var(--e2) 0; }
   .expediente li + li { border-top: 1px solid var(--borda); }
 }

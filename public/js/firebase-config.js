@@ -2,12 +2,12 @@
 // Onde pegar: console do Firebase → ⚙️ Configurações do projeto → Seus apps → app Web → "Configuração".
 // Esses valores não são senha: eles ficam visíveis no site. Quem protege o acesso é o Firebase Authentication.
 export const firebaseConfig = {
-  apiKey: "COLE_AQUI",
-  authDomain: "COLE_AQUI",
-  projectId: "COLE_AQUI",
-  storageBucket: "COLE_AQUI",
-  messagingSenderId: "COLE_AQUI",
-  appId: "COLE_AQUI",
+  apiKey: "AIzaSyC6gQxunTZYnnh2w60hLMJUTda-LXlj-iA",
+  authDomain: "volt-academia.firebaseapp.com",
+  projectId: "volt-academia",
+  storageBucket: "volt-academia.firebasestorage.app",
+  messagingSenderId: "158466181635",
+  appId: "1:158466181635:web:1ef4cec73ac5abf0e65c36"
 };
 
 // E-mails que podem entrar no painel (o usuário é criado no console: Authentication → Users → Add user).

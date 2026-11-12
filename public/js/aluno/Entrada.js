@@ -75,7 +75,7 @@ export function Entrada({ aoEntrar }) {
     </div>
 
     <aside className="entrada__contato" aria-label="Contato e endereço">
-      <h2>Fale com a gente</h2>
+      <h2>Informações de contato</h2>
       <p className="contato__linha"><${Pin} tamanho=${18} /> <span>${CONTATO.endereco}</span></p>
       <p className="contato__linha"><${Telefone} tamanho=${18} /> <a href=${linkTelefone(CONTATO.telefone)}>${CONTATO.telefone}</a></p>
       <div className="contato__botoes">

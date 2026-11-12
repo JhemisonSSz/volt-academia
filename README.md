@@ -86,7 +86,8 @@ horários livres), a camada de dados e as ações. Os testes de tela foram feito
 firebase deploy --project <id-do-projeto> --only hosting
 ```
 
-Sempre informe o `--project` para não publicar no projeto errado.
+Sempre informe o `--project`. O `firebase.json` já fixa o site (`"site": "volt-academia"`): se alguém rodar o deploy em
+outro projeto, o Firebase dá erro em vez de publicar no lugar errado.
 
 ## Créditos
 

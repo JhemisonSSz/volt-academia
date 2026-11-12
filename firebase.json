@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "volt-academia",
     "public": "public",
     "ignore": [
       "firebase.json",

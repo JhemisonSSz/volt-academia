@@ -20,6 +20,7 @@ telas (React)  →  acoes.js  →  regras.js (decide)
 | `acoes.js` | O que as telas pedem: reservar, cancelar, registrar pagamento, excluir. Junta `regras.js` com `dados.js`. Cada ação entra numa fila, então dois cliques seguidos nunca criam reserva duplicada. |
 | `descricao.js` | Transforma reservas e datas em texto ("Qui 12/11", "Dança · Júlia Santos"). |
 | `icones.js` | Ícones em SVG. |
+| `contato.js` | Endereço, telefone e horários da academia (tudo fictício) e os links de ligação e de WhatsApp. O bloco "Fale com a gente" da entrada lê estes dados. |
 | `auth.js`, `permissao.js`, `firebase-config.js` | O login do painel. `auth.js` é o **único arquivo do painel que conversa com o Firebase** (entrar, sair, saber quem está logado). `permissao.js` tem as regras que dá para testar sem Firebase: quem é administrador e as mensagens de erro em português. `firebase-config.js` guarda os dados públicos do projeto e a lista de e-mails de administradores. |
 | `componentes/` | Peças pequenas: `basicos.js` (botão, campo, status, barra de vagas), `avisos.js` (mensagens que somem), `modal.js` (janela e "tem certeza?"), `usarEstado.js` (liga o React aos dados e controla a rota). |
 | `aluno/` | Telas da área do aluno: `Entrada`, `Inicio`, `Aulas`, `Individual`, `Reservas`, `Mensalidade`, e `app.js` que monta tudo. |

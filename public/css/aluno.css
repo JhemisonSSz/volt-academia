@@ -249,3 +249,43 @@ main:focus { outline: none; }
   }
   .entrada__miolo { padding-top: 0; width: min(520px, 100%); }
 }
+
+/* ---- Contato e endereço (canto inferior direito) ---- */
+.entrada__contato {
+  align-self: end;
+  justify-self: end;
+  width: min(340px, 100%);
+  margin-top: var(--e5);
+  padding: var(--e4);
+  background: rgba(10, 15, 24, 0.88);
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio);
+  font-size: 0.9rem;
+}
+.entrada__contato h2 { margin: 0 0 var(--e3); font-size: 1.3rem; }
+.contato__linha { display: flex; align-items: center; gap: var(--e2); margin: 0 0 var(--e2); }
+.contato__linha svg { flex: none; color: var(--destaque); }
+.contato__linha a { color: var(--texto); }
+.contato__botoes { display: flex; flex-wrap: wrap; gap: var(--e2); margin: var(--e3) 0; }
+.contato__botao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-height: 44px;
+  padding: var(--e2) var(--e4);
+  background: var(--superficie-2);
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-p);
+  color: var(--texto);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color var(--rapido), background-color var(--rapido);
+}
+.contato__botao:hover { border-color: var(--destaque); background: var(--azul-fundo); }
+.contato__botao svg { color: var(--destaque); }
+.contato__horarios ul { margin: 0; padding: 0 0 0 26px; list-style: none; color: var(--texto-suave); }
+.contato__horarios li { display: flex; justify-content: space-between; gap: var(--e3); padding: 2px 0; }
+
+@media (min-width: 900px) {
+  .entrada__contato { position: absolute; right: var(--e6); bottom: var(--e5); margin: 0; }
+}

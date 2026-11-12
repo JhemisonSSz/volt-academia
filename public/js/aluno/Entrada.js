@@ -3,7 +3,8 @@ import { html, useState } from "../react.js";
 import { Botao, Campo } from "../componentes/basicos.js";
 import { acoes } from "../componentes/usarEstado.js";
 import { MENSAGENS } from "../regras.js";
-import { Raio } from "../icones.js";
+import { Raio, Pin, Telefone, Mensagem, Instagram, Relogio } from "../icones.js";
+import { CONTATO, linkTelefone, linkWhatsApp } from "../contato.js";
 import { CriarMatricula } from "./CriarMatricula.js";
 
 const DEMOS = [
@@ -56,5 +57,19 @@ export function Entrada({ aoEntrar }) {
       <p className="entrada__rodape"><a href="admin.html">Painel da academia</a> · Projeto de demonstração</p>
       <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>
     </div>
+
+    <aside className="entrada__contato" aria-label="Contato e endereço">
+      <h2>Fale com a gente</h2>
+      <p className="contato__linha"><${Pin} tamanho=${18} /> <span>${CONTATO.endereco}</span></p>
+      <p className="contato__linha"><${Telefone} tamanho=${18} /> <a href=${linkTelefone(CONTATO.telefone)}>${CONTATO.telefone}</a></p>
+      <div className="contato__botoes">
+        <a className="contato__botao" href=${linkWhatsApp(CONTATO.telefone, "Olá! Vi o site da Volt Academia e quero saber mais.")} target="_blank" rel="noopener"><${Mensagem} tamanho=${16} /> WhatsApp</a>
+        <a className="contato__botao" href=${CONTATO.instagram} target="_blank" rel="noopener"><${Instagram} tamanho=${16} /> Instagram</a>
+      </div>
+      <div className="contato__horarios">
+        <p className="contato__linha"><${Relogio} tamanho=${18} /> <strong>Horários</strong></p>
+        <ul>${CONTATO.horarios.map((h) => html`<li key=${h.dias}><span>${h.dias}</span> <span className="numeros">${h.horas}</span></li>`)}</ul>
+      </div>
+    </aside>
   </main>`;
 }

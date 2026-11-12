@@ -58,17 +58,27 @@ export function Entrada({ aoEntrar }) {
           ${DEMOS.map((d) => html`<${Botao} key=${d.matricula} variante="secundario" onClick=${() => tentar(d.matricula)}>${d.texto}<//>`)}
         </div>
       </div>`}
-      ${criando || planos.length === 0 ? null : html`<section className="entrada__planos" aria-labelledby="titulo-planos">
-        <h2 id="titulo-planos">Planos</h2>
-        <ul className="planos">
-          ${planos.map((p) => html`<li key=${p.id} className=${`plano ${p.id === maisEconomico ? "plano--destaque" : ""}`}>
-            <span className="plano__nome">${p.nome}</span>
-            <span className="plano__preco numeros">${moeda(p.valor)}</span>
-            <span className="plano__mes numeros">${p.meses > 1 ? `${moeda(valorPorMes(p))} por mês` : "por mês"}</span>
-            ${p.id === maisEconomico ? html`<span className="plano__selo">Menor preço por mês</span>` : null}
-          </li>`)}
-        </ul>
-        <${Botao} variante="secundario" onClick=${() => { setCriando(true); window.scrollTo({ top: 0 }); }}>Quero me matricular<//>
+      ${criando ? null : html`<section className="entrada__planos">
+        <div className="planos-horarios">
+          ${planos.length === 0 ? null : html`<div className="planos-coluna">
+            <h2 id="titulo-planos">Planos</h2>
+            <ul className="planos" aria-labelledby="titulo-planos">
+              ${planos.map((p) => html`<li key=${p.id} className=${`plano ${p.id === maisEconomico ? "plano--destaque" : ""}`}>
+                <span className="plano__nome">${p.nome}</span>
+                <span className="plano__preco numeros">${moeda(p.valor)}</span>
+                <span className="plano__mes numeros">${p.meses > 1 ? `${moeda(valorPorMes(p))} por mês` : "por mês"}</span>
+                ${p.id === maisEconomico ? html`<span className="plano__selo">Menor preço por mês</span>` : null}
+              </li>`)}
+            </ul>
+          </div>`}
+          <div className="expediente-coluna">
+            <h2 id="titulo-horarios"><${Relogio} tamanho=${16} /> Horários</h2>
+            <ul className="expediente" aria-labelledby="titulo-horarios">
+              ${CONTATO.horarios.map((h) => html`<li key=${h.dias}><span>${h.dias}</span> <strong className="numeros">${h.horas}</strong></li>`)}
+            </ul>
+          </div>
+        </div>
+        ${planos.length === 0 ? null : html`<${Botao} variante="secundario" onClick=${() => { setCriando(true); window.scrollTo({ top: 0 }); }}>Quero me matricular<//>`}
       </section>`}
       <p className="entrada__rodape"><a href="admin.html">Painel da academia</a> · Projeto de demonstração</p>
       <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>
@@ -81,10 +91,6 @@ export function Entrada({ aoEntrar }) {
       <div className="contato__botoes">
         <a className="contato__botao" href=${linkWhatsApp(CONTATO.telefone, "Olá! Vi o site da Volt Academia e quero saber mais.")} target="_blank" rel="noopener"><${Mensagem} tamanho=${16} /> WhatsApp</a>
         <a className="contato__botao" href=${CONTATO.instagram} target="_blank" rel="noopener"><${Instagram} tamanho=${16} /> Instagram</a>
-      </div>
-      <div className="contato__horarios">
-        <p className="contato__linha"><${Relogio} tamanho=${18} /> <strong>Horários</strong></p>
-        <ul>${CONTATO.horarios.map((h) => html`<li key=${h.dias}><span>${h.dias}</span> <span className="numeros">${h.horas}</span></li>`)}</ul>
       </div>
     </aside>
   </main>`;

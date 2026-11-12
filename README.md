@@ -13,7 +13,7 @@ tudo funciona direto no navegador, sem servidor e sem banco de dados (os dados f
 - Vê as próprias reservas, cancela (até 2 horas antes) e acompanha a **mensalidade**.
 - Aluno com mensalidade em atraso **não consegue fazer novas reservas**.
 - **Planos e preços** visíveis já na tela de entrada (com o valor por mês), lidos dos mesmos planos do painel.
-- **Contato e endereço** (fictícios) no canto inferior direito da tela de entrada: cidade, telefone, WhatsApp, Instagram e horários.
+- **Horários de funcionamento** ao lado dos planos, e **informações de contato** (fictícias: cidade, telefone, WhatsApp e Instagram) no canto inferior direito da tela de entrada.
 - **Criar matrícula** pela tela de entrada: o aluno novo nasce com a primeira mensalidade pendente e paga pelo site
   (**Pix ou cartão, simulados**: nada é cobrado e nenhum dado de cartão é pedido) ou na recepção, pelo painel.
 

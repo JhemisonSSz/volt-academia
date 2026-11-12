@@ -49,6 +49,15 @@ Enquanto o `firebase-config.js` estiver com "COLE_AQUI", ninguém entra e a tela
 
 > Os dados do painel (alunos, aulas, reservas) continuam no navegador de cada visitante; o Firebase cuida só do login.
 
+### Sobre o alerta "Possible valid secrets detected" do GitHub
+
+O GitHub pode avisar que há uma "Google API Key" em `public/js/firebase-config.js`. **É um falso positivo.** A `apiKey`
+do Firebase Web é um identificador **público** do app: ela precisa estar no código do site e qualquer visitante a vê
+no navegador. Quem protege o painel é o login do Firebase (a senha fica lá), e não esta chave. Boa prática: no Google
+Cloud (*APIs e serviços → Credenciais → "Browser key"*), restrinja a chave a **Sites (referenciadores HTTP)**:
+`https://volt-academia.web.app/*` e `https://volt-academia.firebaseapp.com/*`. No GitHub, feche o alerta como
+"False positive". Não é preciso trocar a chave.
+
 ## Como rodar
 
 Precisa do **Python** (para servir os arquivos) e do **Node** (só para os testes).

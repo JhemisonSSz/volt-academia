@@ -1,6 +1,7 @@
 // firebase-config.js — Dados do projeto no Firebase usados no login do painel.
 // Onde pegar: console do Firebase → ⚙️ Configurações do projeto → Seus apps → app Web → "Configuração".
 // Esses valores não são senha: eles ficam visíveis no site. Quem protege o acesso é o Firebase Authentication.
+// (O GitHub pode alertar "Google API Key" aqui: é falso positivo, a apiKey do Firebase Web é pública. Veja o README.)
 export const firebaseConfig = {
   apiKey: "AIzaSyC6gQxunTZYnnh2w60hLMJUTda-LXlj-iA",
   authDomain: "volt-academia.firebaseapp.com",

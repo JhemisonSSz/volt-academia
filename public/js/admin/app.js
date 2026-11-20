@@ -56,7 +56,7 @@ function Entrada() {
           onChange=${(e) => { setSenha(e.target.value); setErro(""); }} />
         <${Botao} type="submit" carregando=${conferindo}>Entrar<//>
       </form>
-      <p className="entrada__aviso">Painel restrito. Quer ver como ele funciona? Peça o acesso pelo <a href="https://novaaon.web.app/" target="_blank" rel="noopener">portfólio NOVAA On</a>.</p>
+      <p className="entrada__aviso">Painel restrito. Quer ver como ele funciona? Peça o acesso pelo <a href="https://novj.web.app/" target="_blank" rel="noopener">portfólio NOVAA On</a>.</p>
       <p className="entrada__rodape">Demonstração: os dados ficam só neste navegador. · <a href="index.html">Ver site do aluno</a></p>
       <p className="entrada__credito">Foto: <a href="https://www.pexels.com/photo/woman-lifting-a-dumbbell-13106577/" target="_blank" rel="noopener">Airam Dato-on, Pexels</a></p>
     </div>
